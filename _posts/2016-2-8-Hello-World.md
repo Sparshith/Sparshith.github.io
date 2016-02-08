@@ -26,4 +26,4 @@ Most importantly, if you find any errors in the content that I put up,  wish to 
 
 Things I learnt today:
 1) .md files don't recognize normal end of lines. Had to use html linebreak(br) tags. <br> 
-2) Path to github userprofile picture: <a href="https://avatars1.githubusercontent.com/u/8277740?v=2&s=460"></a> where 8277740 is my github user_id. To find yours, use http://caius.github.io/github_id/.
+2) Path to github userprofile picture: <a href="https://avatars1.githubusercontent.com/u/8277740?v=2&s=460">https://avatars1.githubusercontent.com/u/8277740?v=2&s=460</a> where 8277740 is my github user_id. To find yours, use http://caius.github.io/github_id/.
