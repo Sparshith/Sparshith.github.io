@@ -4,7 +4,7 @@ title: About
 permalink: /about/
 ---
 
-I debated a lot at RVCE in the last 4 years. Now, I code at <a href="http://zomato.com">Zomato<a>.
+I debated a lot at RVCE in the last 4 years. Now, I code at <a href="http://zomato.com">Zomato</a>.
 
 ### More Information
 
