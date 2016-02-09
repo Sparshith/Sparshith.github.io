@@ -4,11 +4,11 @@ title: About
 permalink: /about/
 ---
 
-I debated a lot at RVCE in the last 4 years. Now, I code at Zomato.
+I debated a lot at RVCE in the last 4 years. Now, I code at <a href="http://zomato.com">Zomato<a>.
 
 ### More Information
 
-A place to include any other types of information that you'd like to include about yourself.
+Love Python and PHP. Courting Javascript and CSS.  
 
 ### Contact me
 
