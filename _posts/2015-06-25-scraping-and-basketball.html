@@ -1,0 +1,47 @@
+---
+layout: post
+title: Scraping and Basketball.
+date: 2015-06-25 16:01:41.000000000 +05:30
+type: post
+published: true
+status: publish
+categories: []
+tags: []
+meta:
+  _oembed_3d6130dcfee4edb5877064fcb591a7b8: '{{unknown}}'
+  _oembed_b9b6816dd2ed37cfdb3a7f44fe12303a: '{{unknown}}'
+  _rest_api_published: '1'
+  _rest_api_client_id: '-1'
+  _publicize_job_id: '12029022891'
+author:
+  login: sparshithsampath
+  email: sparshithsampath@gmail.com
+  display_name: sparshithsampath
+  first_name: ''
+  last_name: ''
+---
+<p>I was looking for API's to get data from nba.com/stats to try and work with it and see if anything interesting turns up. All API's required player ID's. I couldn't find anything online that gave me a list of player ID's I could use as input to the API's.</p>
+<p>Then I came across this: <a href="http://www.gregreda.com/2015/02/15/web-scraping-finding-the-api/">http://www.gregreda.com/2015/02/15/web-scraping-finding-the-api/</a>. It's easily one of the best tutorials I have gone through. Thorough and simple. Applying this, I was able to extract data of all active players, team-wise.</p>
+<p>Here's the code I used:</p>
+<p>[sourcecode langauge="python"]</p>
+<p>import requests<br />
+import json</p>
+<p>for i in range(0,30): #Iterating for the 30 Nba teams, whose ID's were thankfully in a sequence.<br />
+team_id=1610612737+i<br />
+url = 'http://stats.nba.com/stats/commonteamroster?LeagueID=00&amp;Season=2014-15&amp;TeamID='+ str(team_id)<br />
+r = requests.get(url)<br />
+data= json.loads(r.text)</p>
+<p>if(i==0):    #To print all headers once<br />
+for element in data['resultSets'][0]['headers']:<br />
+print element,<br />
+print &quot;,&quot;,<br />
+print &quot;&quot;</p>
+<p>for element in data['resultSets'][0]['rowSet']:<br />
+for elements in element:<br />
+elements= str(elements)<br />
+elements = elements.replace(',', '') #To remove any commas within elements, to avoid confusion while saving as csv.<br />
+print elements,<br />
+print &quot;,&quot;,<br />
+print &quot;&quot;</p>
+<p>[/sourcecode]</p>
+<p><a href="https://github.com/Sparshith/nba_stats.git" target="_blank">https://github.com/Sparshith/nba_stats.git</a> if you want to download the csv file containing the data, or the python file containing the code.</p>

@@ -1,0 +1,41 @@
+---
+layout: post
+title: Hacks.
+date: 2015-12-05 08:05:40.000000000 +05:30
+type: post
+published: true
+status: publish
+categories: []
+tags: []
+meta:
+  _oembed_bcd5367dd830314d24bef7b1f4c9a59d: '{{unknown}}'
+  _oembed_195ce3e95a664495ee8bd644362e89dd: '{{unknown}}'
+  _oembed_852fa756df009fce57e7307426fad784: '{{unknown}}'
+  _rest_api_published: '1'
+  _rest_api_client_id: '-1'
+  _publicize_job_id: '17493210616'
+  _oembed_4e436a14ac48fd6917dcc49cd451f10f: '{{unknown}}'
+author:
+  login: sparshithsampath
+  email: sparshithsampath@gmail.com
+  display_name: sparshithsampath
+  first_name: ''
+  last_name: ''
+---
+<p>These are some things that I have found to be useful.</p>
+<p><strong>Web server setup:</strong> (ETA 1 min)<b><br />
+</b>If you don't want to install apache or something similar, just run the command "python -m SimpleHTTPServer" to serve files in the current working directory. Go to any browser and type "localhost:8000" (8000 is the default port number) and enjaay.</p>
+<p><strong>Trending repositories on Github: </strong>(ETA 5 mins)<br />
+Good read over your choice of beverage. <a href="https://github.com/trending">Cheggitout</a>.</p>
+<p><strong>Custom names for tabs in Terminal: </strong>(ETA 1 min)<br />
+Sometimes, having multiple tabs gets confusing and annoying this. Naming them is quite helpful.</p>
+<p>Add this function in ~/.bashrc.<code><br />
+</code></p>
+<p>function set-title() {<br />
+if [[ -z "$ORIG" ]]; then<br />
+ORIG=$PS1<br />
+fi<br />
+TITLE="\[\e]2;$@\a\]"<br />
+PS1=${ORIG}${TITLE}<br />
+}</p>
+<p>Either open a new tab or run <em>source .bashrc </em>and type set-title &lt;your fav-title-name&gt;.</p>

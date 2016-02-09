@@ -1,0 +1,135 @@
+---
+layout: post
+title: Debate Break Prediction (AP and BP)
+date: 2015-06-12 05:53:03.000000000 +05:30
+type: post
+published: true
+status: publish
+categories: []
+tags: []
+meta:
+  sharing_disabled: '1'
+  _rest_api_published: '1'
+  _rest_api_client_id: '-1'
+  _publicize_job_id: '11588596811'
+author:
+  login: sparshithsampath
+  email: sparshithsampath@gmail.com
+  display_name: sparshithsampath
+  first_name: ''
+  last_name: ''
+---
+<p>There's always talk about the number of points required to break, or the correct number of pre-break rounds for some number of teams. This might help.</p>
+<p>[sourcecode langauge="python"]</p>
+<p>def AP(teams,break_team, rounds):  #function for AP<br />
+# Initializing a list (of size = number of teams). All teams on zero at the beginning.<br />
+    lis1=[]<br />
+    lis2=[]<br />
+    for i in range(0,teams):<br />
+            lis1.append(0)<br />
+            lis2.append(0)<br />
+ <br />
+#case 1: All Pull-ups lose<br />
+    print &quot;Case 1:&quot;<br />
+    for i in range(0,rounds):<br />
+            j=0<br />
+            while j&lt;teams:<br />
+                lis1[j+1]=lis1[j+1]+1<br />
+                j=j+2<br />
+            lis1.sort()<br />
+ <br />
+    i=teams-1;<br />
+    while(i&gt;=0):<br />
+            count = 1<br />
+            while(lis1[i]==lis1[i-1]):<br />
+                count=count+1<br />
+                i=i-1<br />
+            print count,<br />
+            print &quot;teams on&quot;,<br />
+            print lis1[i]<br />
+            i=i-1<br />
+     <br />
+#Case 2: All pull ups win.    <br />
+    print &quot;Case 2:&quot;<br />
+    for i in range(0,rounds):<br />
+            j=0<br />
+            while j&lt;teams:<br />
+                lis2[j]=lis2[j]+1<br />
+                j=j+2<br />
+            lis2.sort()<br />
+ <br />
+    i=teams-1;<br />
+    while(i&gt;=0):<br />
+            count = 1<br />
+            while(lis2[i]==lis2[i-1]):<br />
+                count=count+1<br />
+                i=i-1<br />
+            print count,<br />
+            print &quot;teams on&quot;,<br />
+            print lis2[i]<br />
+            i=i-1</p>
+<p>def BP(teams, break_teams, rounds): #function for BP</p>
+<p># Initializing a list (of size = number of teams). All teams on zero at the beginning.<br />
+    lis1=[]<br />
+    lis2=[]<br />
+    for i in range(0,teams):<br />
+            lis1.append(0)<br />
+            lis2.append(0)<br />
+ <br />
+#case 1: All Pull-ups lose<br />
+    print &quot;Case 1:&quot;<br />
+    for i in range(0,rounds):<br />
+            j=0<br />
+            while j&lt;teams:<br />
+                lis1[j+1]=lis1[j+1]+1<br />
+                lis1[j+2]=lis1[j+2]+2<br />
+                lis1[j+3]=lis1[j+3]+3<br />
+                j=j+4<br />
+            lis1.sort()<br />
+ <br />
+    i=teams-1;<br />
+    while(i&gt;=0):<br />
+            count = 1<br />
+            while(lis1[i]==lis1[i-1]):<br />
+                count=count+1<br />
+                i=i-1<br />
+            print count,<br />
+            print &quot;teams on&quot;,<br />
+            print lis1[i]<br />
+            i=i-1<br />
+     <br />
+#Case 2: All pull ups win.    <br />
+    print &quot;Case 2:&quot;<br />
+    for i in range(0,rounds):<br />
+            j=0<br />
+            while j&lt;teams:<br />
+                lis2[j]=lis2[j]+3<br />
+                lis2[j+1]=lis2[j+1]+2<br />
+                lis2[j+2]=lis2[j+2]+1<br />
+                j=j+4<br />
+            lis2.sort()<br />
+ <br />
+    i=teams-1;<br />
+    while(i&gt;=0):<br />
+            count = 1<br />
+            while(lis2[i]==lis2[i-1]):<br />
+                count=count+1<br />
+                i=i-1<br />
+            print count,<br />
+            print &quot;teams on&quot;,<br />
+            print lis2[i]<br />
+            i=i-1</p>
+<p># Main function</p>
+<p>print &quot;Enter 1 for AP, 2 for BP&quot;<br />
+style= input()<br />
+print &quot;Enter number of teams&quot;<br />
+teams = input()<br />
+print &quot;Enter number of breaking teams&quot;<br />
+break_teams= input()<br />
+print &quot;Enter number of rounds&quot;<br />
+rounds= input()<br />
+if(style==1 or style==&quot;AP&quot;):<br />
+    AP(teams, break_teams,rounds)<br />
+elif(style==2 or style==&quot;BP&quot;):<br />
+    BP(teams, break_teams,rounds)<br />
+[/sourcecode]</p>
