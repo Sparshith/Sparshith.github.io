@@ -283,6 +283,28 @@ footer {
   text-align: center;
 }
 
+//Custom CSS @author: Sparshith Sampath
+.code_snippet {
+	white-space:pre;
+	padding:20px;
+	border:1px solid #9c9c9c;
+	width:90%;
+  overflow: scroll;
+  font-family: monospace;
+  background-color: #000000;
+  color: green;
+}
+
+.ml10 { margin-left: 10px;  }
+.mr10 { margin-right: 10px; }
+.ml20 { margin-left: 20px;  }
+.mr20 { margin-right: 20px; }
+
+.bullet_numbers {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
 // Settled on moving the import of syntax highlighting to the bottom of the CSS
 // ... Otherwise it really bloats up the top of the CSS file and makes it difficult to find the start
 @import "highlights";
