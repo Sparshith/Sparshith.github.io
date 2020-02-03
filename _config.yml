@@ -6,7 +6,7 @@
 name: Sparshith Sampath
 
 # Short bio or description (displayed in the header)
-description: Daily shots and me.
+description: Good game, tough loss, who cares
 
 # URL of your avatar or profile pic (you could use your GitHub profile pic)
 avatar: https://avatars1.githubusercontent.com/u/8277740?v=2&s=460
@@ -17,20 +17,11 @@ avatar: https://avatars1.githubusercontent.com/u/8277740?v=2&s=460
 
 # Includes an icon in the footer for each username you enter
 footer-links:
-  dribbble:
   email: sparshithsampath@gmail.com
-  facebook: https://www.facebook.com/Sparshithsampath
-  flickr:
   github: https://github.com/Sparshith/
-  instagram:
+  instagram: https://www.instagram.com/sparshithsampath
   linkedin: https://in.linkedin.com/in/sparshith-sampath-50886377
-  pinterest:
-  rss: # just type anything here for a working RSS icon
-  twitter: jekyllrb
-  stackoverflow: # your stackoverflow profile, e.g. "users/50476/bart-kiers"
-  youtube: # channel/<your_long_string> or user/<user-name>
-  googleplus: # anything in your profile username that comes after plus.google.com/
-
+  twitter: SparshithSampat
 
 # Enter your Disqus shortname (not your username) to enable commenting on posts
 # You can find your shortname on the Settings page of your Disqus account
