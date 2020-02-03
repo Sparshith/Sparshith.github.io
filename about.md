@@ -4,11 +4,7 @@ title: About
 permalink: /about/
 ---
 
-I debated a lot at RVCE in the last 4 years. Now, I code at <a href="http://zomato.com">Zomato</a>.
-
-### More Information
-
-Love Python and PHP. Courting Javascript and CSS.  
+SDE-2 @ Zomato
 
 ### Contact me
 
