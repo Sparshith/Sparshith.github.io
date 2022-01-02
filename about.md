@@ -4,8 +4,8 @@ title: About
 permalink: /about/
 ---
 
-SDE-2 @ Zomato
+Engineering Manager @ Zomato, Building Hyperpure
 
 ### Contact me
 
-[sparshithsampath@gmail.com](mailto:email@domain.com)
+[sparshithsampath@gmail.com](mailto:sparshithsampath@gmail.com)
