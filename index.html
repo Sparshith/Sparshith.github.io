@@ -1,18 +1,39 @@
----
-layout: default
----
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Writing by Sparshith on engineering, AI, history, sports, and the occasional project note.">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2">
+  <title>sparshith</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-shell site-header">
+    <a class="site-title" href="/">sparshith</a>
+    <nav class="site-nav" aria-label="Primary">
+      <a href="#latest">Latest</a>
+    </nav>
+  </header>
 
-<div class="posts">
-  {% for post in site.posts %}
-    <article class="post">
+  <main class="site-shell simple-home">
+    <section class="section" id="latest">
+      <article class="single-story">
+        <p class="story-kicker">Machine Learning / Chess</p>
+        <h2 class="lead-head"><a href="posts/nanodanya.html">nanoDanya: teaching a language model to play chess</a></h2>
+        <p class="story-dek">
+          An experiment in how much chess a language model can internalize from next-token prediction alone.
+        </p>
+        <p class="meta">By Sparshith · April 8, 2026</p>
+      </article>
+    </section>
 
-      <h1><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h1>
-
-      <div class="entry">
-        {{ post.excerpt }}
-      </div>
-
-      <a href="{{ site.baseurl }}{{ post.url }}" class="read-more">Read More</a>
-    </article>
-  {% endfor %}
-</div>
+    <section class="section simple-note">
+      <p>
+        More things will show up here when they deserve to. Until then, this site is
+        running on one post and a wildly optimistic view of my future consistency.
+      </p>
+    </section>
+  </main>
+</body>
+</html>
