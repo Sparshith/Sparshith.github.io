@@ -1,57 +1,687 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Notes on nanoDanya, an experiment in language-model chess.">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Notes on nanoDanya, an experiment in language-model chess." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
   <title>nanoDanya | sparshith</title>
   <link rel="stylesheet" href="../styles.css">
+  <style>
+    .intro {
+      margin-bottom: 30px;
+    }
+    .intro p {
+      max-width: 35em;
+    }
+    h2 {
+      line-height: 1.12;
+      font-size: 34px;
+      margin-bottom: 14px;
+    }
+    .section {
+      margin-top: 22px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+    .compare-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin: 18px 0 20px;
+    }
+    .compare-card {
+      min-height: 100%;
+      padding: 16px 18px 18px;
+      border: 1px solid var(--line);
+      background: #fffdf9;
+    }
+    .compare-card.emphasis {
+      background: #f7ece6;
+      border-color: #e5c9bc;
+    }
+    .compare-kicker {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .compare-card h3 {
+      margin: 0 0 12px;
+      line-height: 1.15;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .compare-card p {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.55;
+    }
+    .viz {
+      width: 100%;
+      background: #fff;
+      border: 1px solid var(--line);
+      padding: 8px;
+    }
+    .viz img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    .demo-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 16px 16px 0;
+    }
+    .demo-kicker {
+      margin: 0 0 6px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .demo-title {
+      margin: 0;
+      line-height: 1.2;
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 600;
+      font-size: 24px;
+      color: var(--text);
+    }
+    .demo-transport {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .demo-split {
+      display: grid;
+      grid-template-columns: 308px minmax(0, 1fr);
+      gap: 22px;
+      align-items: start;
+      padding: 14px 16px 16px;
+    }
+    .board-wrap {
+      width: 308px;
+    }
+    .board-label,
+    .history-label,
+    .prediction-label {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .board-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      grid-template-rows: repeat(8, 1fr);
+      border: 1px solid var(--line);
+      width: 100%;
+      aspect-ratio: 1;
+      overflow: hidden;
+      background: #eadbc6;
+    }
+    .board-legend {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .legend-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .legend-swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+    }
+    .legend-swatch.source {
+      background: rgba(32, 104, 63, 0.34);
+    }
+    .legend-swatch.target {
+      background: rgba(178, 58, 42, 0.34);
+    }
+    .square {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      line-height: 1;
+      overflow: hidden;
+    }
+    .square.light {
+      background: #f1dfc8;
+    }
+    .square.dark {
+      background: #c58e62;
+    }
+    .square::after {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      border-radius: 6px;
+      opacity: 0;
+      transform: scale(0.88);
+    }
+    .square.changed::after {
+      opacity: 1;
+      animation: squarePulse 760ms ease;
+    }
+    .square.source::after {
+      background: rgba(32, 104, 63, 0.18);
+      box-shadow: inset 0 0 0 1px rgba(32, 104, 63, 0.28);
+    }
+    .square.target::after {
+      background: rgba(178, 58, 42, 0.16);
+      box-shadow: inset 0 0 0 1px rgba(178, 58, 42, 0.26);
+    }
+    .piece {
+      position: relative;
+      z-index: 1;
+      display: block;
+      transition: transform 200ms ease;
+    }
+    .piece.pop {
+      animation: piecePop 380ms ease;
+    }
+    .demo-right {
+      min-width: 0;
+    }
+    .token-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-height: 44px;
+      margin-bottom: 18px;
+    }
+    .token-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 54px;
+      height: 38px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #f6f4ef;
+      color: var(--text);
+      font-size: 17px;
+      font-weight: 600;
+      opacity: 0.28;
+      transition: opacity 180ms ease, background 180ms ease, border-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
+    }
+    .token-chip.visible {
+      opacity: 1;
+    }
+    .token-chip.complete {
+      background: #f9f6f0;
+      border-color: #cec5b7;
+    }
+    .token-chip.special {
+      background: #f7ebe8;
+    }
+    .token-chip.current {
+      border-color: var(--accent);
+      background: #fff7f4;
+      box-shadow: 0 0 0 4px rgba(178, 58, 42, 0.12);
+      animation: chipPulse 900ms ease infinite;
+    }
+    .prediction-box {
+      margin-top: 18px;
+      margin-bottom: 18px;
+    }
+    .prediction-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 62px;
+      height: 40px;
+      padding: 0 16px;
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      background: transparent;
+      color: #8b857c;
+      font-size: 17px;
+      font-weight: 600;
+      transition: background 220ms ease, border-color 220ms ease, color 220ms ease, box-shadow 220ms ease;
+    }
+    .prediction-chip.show {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 0 0 4px rgba(178, 58, 42, 0.10);
+      animation: predictionIn 420ms ease;
+    }
+    .demo-detail {
+      min-height: 54px;
+      margin-bottom: 12px;
+      padding: 10px 12px;
+      border: 1px solid #eadbcf;
+      background: #fbf8f3;
+      color: #443e36;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+    .demo-caption {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+      max-width: 42ch;
+    }
+    .demo-controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+    .demo-button,
+    .transport-button {
+      border: 1px solid var(--line);
+      background: #ffffff;
+      color: var(--text);
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .demo-button.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+    }
+    code {
+      background: var(--code-bg);
+      padding: 1px 6px;
+      border-radius: 2px;
+      font-size: 0.95em;
+    }
+    @keyframes squarePulse {
+      0% {
+        opacity: 0;
+        transform: scale(0.78);
+      }
+      40% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      100% {
+        opacity: 0.92;
+        transform: scale(1);
+      }
+    }
+    @keyframes piecePop {
+      0% {
+        opacity: 0.25;
+        transform: translateY(4px) scale(0.86);
+      }
+      60% {
+        opacity: 1;
+        transform: translateY(0) scale(1.08);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    @keyframes chipPulse {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-1px);
+      }
+    }
+    @keyframes predictionIn {
+      0% {
+        opacity: 0;
+        transform: translateY(6px) scale(0.92);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    @media (max-width: 980px) {
+      .page {
+        width: min(100vw - 24px, 860px);
+        margin-top: 16px;
+      }
+      h1 {
+        font-size: 38px;
+      }
+      h2 {
+        font-size: 30px;
+      }
+      p {
+        font-size: 18px;
+      }
+      .demo-toolbar {
+        flex-direction: column;
+      }
+      .demo-split {
+        grid-template-columns: 1fr;
+      }
+      .board-wrap {
+        width: 100%;
+        max-width: 320px;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .square.changed::after,
+      .piece.pop,
+      .token-chip.current,
+      .prediction-chip.show {
+        animation: none;
+      }
+      .token-chip,
+      .prediction-chip,
+      .piece {
+        transition: none;
+      }
+    }
+  </style>
+  <meta name="description" content="Notes on nanoDanya, an experiment in language-model chess.">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2">
 </head>
 <body>
   <header class="site-shell site-header">
-    <a class="site-title" href="../index.html">sparshith</a>
+    <a class="site-title" href="../index.html" aria-label="Go to home page" title="Home">sparshith</a>
     <nav class="site-nav" aria-label="Primary">
-      <a href="../index.html#latest">Latest</a>
+      <a href="../index.html">Home</a>
     </nav>
   </header>
 
   <main class="site-shell article-page">
     <article>
-      <header class="article-header">
-        <p class="kicker">Machine Learning / Chess</p>
-        <h1>nanoDanya: teaching a language model to play chess</h1>
-        <p class="dek">
-          An experiment in how far a pure language model can go in chess, and a reminder that cleaner inference
-          wrappers should not be mistaken for deeper learned capability.
-        </p>
-        <p class="meta">By Sparshith · April 8, 2026</p>
-      </header>
+    <section class="intro article-header">
+      <p class="kicker">Machine Learning / Chess</p>
+      <h1>nanoDanya</h1>
+      <p class="dek">
+        I built nanoDanya to teach myself how language models are trained. This is a small language model, and very much a software engineer's version of the project.
+      </p>
+    </section>
 
-      <section class="section article-section">
-        <p>
-          nanoDanya is an experiment in how far a pure language model can go in playing chess. The interesting question
-          is not whether the wrapper can be forced into clean games. It is how much chess the model itself can absorb:
-          legal continuation, tactics, strategic play, and clean game termination from next-token prediction alone.
-        </p>
-        <p>
-          That constraint matters because it changes what counts as progress. Runtime tricks like legality masks or
-          defensive inference heuristics may keep the system running, but they are scaffolding, not the goal.
-        </p>
-      </section>
+    <section class="section article-section" id="vocabulary">
+      <h2>Vocabulary</h2>
+      <p>
+        One of the first choices was tokenisation. For normal language, nanochat uses BPE. That makes sense because
+        language keeps producing new words, names, spellings, and variations. If you tried to treat every full
+        word as its own token, the vocabulary would get out of hand very quickly.
+      </p>
+      <p>
+        Chess seemed more contained. A string like <code>Nf3</code> already means one complete move. So the natural question
+        was whether the model should predict <code>Nf3</code> directly as one token, or build it out of smaller pieces.
+      </p>
+      <p>
+        That seemed like the real tradeoff. Smaller tokens keep the vocabulary compact, but they also turn one chess move into
+        several prediction steps. Whole-move tokens make the vocabulary larger, but now one next-token prediction lines
+        up with one chess decision. I liked the simplicity of that.
+      </p>
+      <p>
+        To sanity-check this, I looked at the dataset. I wanted to know how many distinct SAN moves actually show up,
+        and whether the distribution is broad or repetitive. It turned out to be much more repetitive than I expected:
+        there are 4,517 distinct move tokens, the top 100 already cover 47.6% of all move
+        tokens, and the top 500 reach 91.5%.
+      </p>
+      <figure>
+        <div class="viz">
+          <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5MDAiIGhlaWdodD0iMjg0IiB2aWV3Qm94PSIwIDAgOTAwIDI4NCI+CiAgPHN0eWxlPgogICAgdGV4dCB7IGZvbnQtZmFtaWx5OiB1aS1zYW5zLXNlcmlmLCAtYXBwbGUtc3lzdGVtLCBCbGlua01hY1N5c3RlbUZvbnQsICJTZWdvZSBVSSIsIHNhbnMtc2VyaWY7IH0KICAgIC5zZXJpZiB7IGZvbnQtZmFtaWx5OiBHZW9yZ2lhLCAiVGltZXMgTmV3IFJvbWFuIiwgc2VyaWY7IH0KICA8L3N0eWxlPgogIDxyZWN0IHdpZHRoPSI5MDAiIGhlaWdodD0iMjg0IiBmaWxsPSIjZmZmZmZmIi8+CiAgPHRleHQgeD0iNDgiIHk9IjQwIiBjbGFzcz0ic2VyaWYiIGZvbnQtc2l6ZT0iMjQiIGZvbnQtd2VpZ2h0PSI2MDAiIGZpbGw9IiMxMTExMTEiPlRoZSBzYW1lIG1vdmVzIGtlZXAgc2hvd2luZyB1cDwvdGV4dD4KICA8dGV4dCB4PSI0OCIgeT0iNjIiIGNsYXNzPSJzYW5zIiBmb250LXNpemU9IjE0IiBmaWxsPSIjNGI1NTYzIj5TaGFyZSBvZiBhbGwgbW92ZSB0b2tlbnMgY292ZXJlZCBieSB0aGUgbW9zdCBjb21tb24gbW92ZXM8L3RleHQ+CiAgPHRleHQgeD0iNDgiIHk9Ijg4IiBmb250LXNpemU9IjE3IiBmb250LXdlaWdodD0iNTAwIiBmaWxsPSIjMTExMTExIj4xMCBtb3N0IGNvbW1vbiBtb3ZlczwvdGV4dD48dGV4dCB4PSI4NTIiIHk9Ijg4IiB0ZXh0LWFuY2hvcj0iZW5kIiBmb250LXNpemU9IjE3IiBmb250LXdlaWdodD0iNjAwIiBmaWxsPSIjYjIzYTJhIj4xMS45JTwvdGV4dD48cmVjdCB4PSI0OCIgeT0iMTA0IiB3aWR0aD0iODA0IiBoZWlnaHQ9IjIwIiByeD0iMTAiIGZpbGw9IiNlN2UyZGEiLz48cmVjdCB4PSI0OCIgeT0iMTA0IiB3aWR0aD0iOTUuNjQiIGhlaWdodD0iMjAiIHJ4PSIxMCIgZmlsbD0iI2IyM2EyYSIvPjx0ZXh0IHg9IjQ4IiB5PSIxNTQiIGZvbnQtc2l6ZT0iMTciIGZvbnQtd2VpZ2h0PSI1MDAiIGZpbGw9IiMxMTExMTEiPjEwMCBtb3N0IGNvbW1vbiBtb3ZlczwvdGV4dD48dGV4dCB4PSI4NTIiIHk9IjE1NCIgdGV4dC1hbmNob3I9ImVuZCIgZm9udC1zaXplPSIxNyIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iI2IyM2EyYSI+NDcuNiU8L3RleHQ+PHJlY3QgeD0iNDgiIHk9IjE3MCIgd2lkdGg9IjgwNCIgaGVpZ2h0PSIyMCIgcng9IjEwIiBmaWxsPSIjZTdlMmRhIi8+PHJlY3QgeD0iNDgiIHk9IjE3MCIgd2lkdGg9IjM4Mi42NCIgaGVpZ2h0PSIyMCIgcng9IjEwIiBmaWxsPSIjYjIzYTJhIi8+PHRleHQgeD0iNDgiIHk9IjIyMCIgZm9udC1zaXplPSIxNyIgZm9udC13ZWlnaHQ9IjUwMCIgZmlsbD0iIzExMTExMSI+MSw1MDAgbW9zdCBjb21tb24gbW92ZXM8L3RleHQ+PHRleHQgeD0iODUyIiB5PSIyMjAiIHRleHQtYW5jaG9yPSJlbmQiIGZvbnQtc2l6ZT0iMTciIGZvbnQtd2VpZ2h0PSI2MDAiIGZpbGw9IiNiMjNhMmEiPjk5LjglPC90ZXh0PjxyZWN0IHg9IjQ4IiB5PSIyMzYiIHdpZHRoPSI4MDQiIGhlaWdodD0iMjAiIHJ4PSIxMCIgZmlsbD0iI2U3ZTJkYSIvPjxyZWN0IHg9IjQ4IiB5PSIyMzYiIHdpZHRoPSI4MDIuNDkiIGhlaWdodD0iMjAiIHJ4PSIxMCIgZmlsbD0iI2IyM2EyYSIvPgo8L3N2Zz4K" alt="Coverage overview of move vocabulary" />
+        </div>
+      </figure>
+      <p>
+        Another way to say it is that only 110 moves (2.4% of the move vocabulary) cover
+        half of all move tokens, and 830 moves (18.4%) are enough to reach
+        99% coverage.
+      </p>
+      <p>
+        So this does make the vocabulary bigger, but not by that much. In chess, it still feels reasonable to let one
+        token stand for one move.
+      </p>
+      <p>
+        It also makes the experiment easier to read. The model is predicting chess moves directly, rather than
+        assembling move notation a piece at a time.
+      </p>
+      <p>
+        This is the part I liked in practice: one token, one move.
+      </p>
+      <figure>
+        <div class="viz">
+          <div class="demo-toolbar">
+            <div>
+              <div class="demo-kicker">Animated example</div>
+              <div class="demo-title">e4 e5 Nf3 Nc6 Bb5 -&gt; a6</div>
+            </div>
+            <div class="demo-transport">
+              <button type="button" class="transport-button" data-demo-toggle>Pause</button>
+              <button type="button" class="transport-button" data-demo-restart>Restart</button>
+            </div>
+          </div>
+          <div class="demo-split" data-demo-root>
+            <div class="board-wrap">
+              <div class="board-label">Reconstructed board</div>
+              <div class="board-grid" data-demo-board></div>
+              <div class="board-legend">
+                <span class="legend-chip"><span class="legend-swatch source"></span> origin square</span>
+                <span class="legend-chip"><span class="legend-swatch target"></span> destination square</span>
+              </div>
+            </div>
+            <div class="demo-right">
+              <div class="history-label">Conditioning context (tokens up to n)</div>
+              <div class="token-strip" data-demo-history></div>
+              <div class="prediction-box">
+                <div class="prediction-label">Model predicts token n+1</div>
+                <div class="prediction-chip" data-demo-prediction>?</div>
+              </div>
+              <div class="demo-detail" data-demo-detail></div>
+              <div class="demo-caption" data-demo-caption></div>
+              <div class="demo-controls" data-demo-controls></div>
+            </div>
+          </div>
+        </div>
+      </figure>
+    </section>
 
-      <section class="section article-section">
-        <p>
-          The real work is in the data, tokenization, training objective, and the model's learned behavior. Those are
-          the levers that can make the model more robust in a way that actually transfers.
-        </p>
-        <p>
-          I like projects like this because they force the question into the open: what does the model actually know,
-          and what are we just patching around at inference time?
-        </p>
-        <p class="return-link"><a href="../index.html">Back to home</a></p>
-      </section>
+    <section class="section article-section" id="model">
+      <h2>Model</h2>
+      <p>
+        I had not built transformers before, and I mainly wanted to get off the ground and start training something.
+        So I started from nanochat and kept its GPT backbone mostly the same: 12 layers, 6 attention heads, and an
+        embedding dimension of 768. That was not the result of much tuning. It was just a simple place to start that
+        already worked.
+      </p>
+      <p>
+        The part I thought about a bit more was context length. I was used to hearing about language models with huge
+        context windows, but chess did not seem like that kind of problem. Games are not that long, and most of what
+        matters seems to live in a pretty short move history.
+      </p>
+      <p>
+        The median game in the training set is 74 moves, and even the longest is 301
+        moves, so 512 tokens already leaves plenty of room. That felt like a better fit for the problem, and it also
+        made training and inference cheaper. Once that was set, the more interesting question was how to train it.
+      </p>
+    </section>
     </article>
   </main>
+  <script>
+    const demoData = {"tokens": ["<bos>", "e4", "e5", "Nf3", "Nc6", "Bb5"], "states": [{"label": "Start", "button_label": "Start", "context_len": 1, "focus_token_idx": 0, "board": [{"piece": "\u265c", "light": true}, {"piece": "\u265e", "light": false}, {"piece": "\u265d", "light": true}, {"piece": "\u265b", "light": false}, {"piece": "\u265a", "light": true}, {"piece": "\u265d", "light": false}, {"piece": "\u265e", "light": true}, {"piece": "\u265c", "light": false}, {"piece": "\u265f", "light": false}, {"piece": "\u265f", "light": true}, {"piece": "\u265f", "light": false}, {"piece": "\u265f", "light": true}, {"piece": "\u265f", "light": false}, {"piece": "\u265f", "light": true}, {"piece": "\u265f", "light": false}, {"piece": "\u265f", "light": true}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "\u2659", "light": true}, {"piece": "\u2659", "light": false}, {"piece": "\u2659", "light": true}, {"piece": "\u2659", "light": false}, {"piece": "\u2659", "light": true}, {"piece": "\u2659", "light": false}, {"piece": "\u2659", "light": true}, {"piece": "\u2659", "light": false}, {"piece": "\u2656", "light": false}, {"piece": "\u2658", "light": true}, {"piece": "\u2657", "light": false}, {"piece": "\u2655", "light": true}, {"piece": "\u2654", "light": false}, {"piece": "\u2657", "light": true}, {"piece": "\u2658", "light": false}, {"piece": "\u2656", "light": true}], "prediction": "e4", "caption": "The visible tokens are the full conditioning context. The model predicts exactly one next token from them.", "detail": "Seen so far: <bos>. Predict next token: e4.", "changed": [], "source": null, "target": null, "delay_ms": 1200}, {"label": "e4", "button_label": "e4", "context_len": 2, "focus_token_idx": 1, "board": [{"piece": "\u265c", "light": true}, {"piece": "\u265e", "light": false}, {"piece": "\u265d", "light": true}, {"piece": "\u265b", "light": false}, {"piece": "\u265a", "light": true}, {"piece": "\u265d", "light": false}, {"piece": "\u265e", "light": true}, {"piece": "\u265c", "light": false}, {"piece": "\u265f", "light": false}, {"piece": "\u265f", "light": true}, {"piece": "\u265f", "light": false}, {"piece": "\u265f", "light": true}, {"piece": "\u265f", "light": false}, {"piece": "\u265f", "light": true}, {"piece": "\u265f", "light": false}, {"piece": "\u265f", "light": true}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "\u2659", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "\u2659", "light": true}, {"piece": "\u2659", "light": false}, {"piece": "\u2659", "light": true}, {"piece": "\u2659", "light": false}, {"piece": "", "light": true}, {"piece": "\u2659", "light": false}, {"piece": "\u2659", "light": true}, {"piece": "\u2659", "light": false}, {"piece": "\u2656", "light": false}, {"piece": "\u2658", "light": true}, {"piece": "\u2657", "light": false}, {"piece": "\u2655", "light": true}, {"piece": "\u2654", "light": false}, {"piece": "\u2657", "light": true}, {"piece": "\u2658", "light": false}, {"piece": "\u2656", "light": true}], "prediction": "e5", "caption": "After committing e4, the model conditions on all visible tokens and predicts the next one: e5.", "detail": "Seen so far: <bos> e4. Predict next token: e5. e4 is one token: pawn from e2 to e4.", "changed": [36, 52], "source": 52, "target": 36, "delay_ms": 1350}, {"label": "e5", "button_label": "e5", "context_len": 3, "focus_token_idx": 2, "board": [{"piece": "\u265c", "light": true}, {"piece": "\u265e", "light": false}, {"piece": "\u265d", "light": true}, {"piece": "\u265b", "light": false}, {"piece": "\u265a", "light": true}, {"piece": "\u265d", "light": false}, {"piece": "\u265e", "light": true}, {"piece": "\u265c", "light": false}, {"piece": "\u265f", "light": false}, {"piece": "\u265f", "light": true}, {"piece": "\u265f", "light": false}, {"piece": "\u265f", "light": true}, {"piece": "", "light": false}, {"piece": "\u265f", "light": true}, {"piece": "\u265f", "light": false}, {"piece": "\u265f", "light": true}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "\u265f", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "\u2659", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "\u2659", "light": true}, {"piece": "\u2659", "light": false}, {"piece": "\u2659", "light": true}, {"piece": "\u2659", "light": false}, {"piece": "", "light": true}, {"piece": "\u2659", "light": false}, {"piece": "\u2659", "light": true}, {"piece": "\u2659", "light": false}, {"piece": "\u2656", "light": false}, {"piece": "\u2658", "light": true}, {"piece": "\u2657", "light": false}, {"piece": "\u2655", "light": true}, {"piece": "\u2654", "light": false}, {"piece": "\u2657", "light": true}, {"piece": "\u2658", "light": false}, {"piece": "\u2656", "light": true}], "prediction": "Nf3", "caption": "After committing e5, the model conditions on all visible tokens and predicts the next one: Nf3.", "detail": "Seen so far: <bos> e4 e5. Predict next token: Nf3. e5 is one token: pawn from e7 to e5.", "changed": [12, 28], "source": 12, "target": 28, "delay_ms": 1350}, {"label": "Nf3", "button_label": "Nf3", "context_len": 4, "focus_token_idx": 3, "board": [{"piece": "\u265c", "light": true}, {"piece": "\u265e", "light": false}, {"piece": "\u265d", "light": true}, {"piece": "\u265b", "light": false}, {"piece": "\u265a", "light": true}, {"piece": "\u265d", "light": false}, {"piece": "\u265e", "light": true}, {"piece": "\u265c", "light": false}, {"piece": "\u265f", "light": false}, {"piece": "\u265f", "light": true}, {"piece": "\u265f", "light": false}, {"piece": "\u265f", "light": true}, {"piece": "", "light": false}, {"piece": "\u265f", "light": true}, {"piece": "\u265f", "light": false}, {"piece": "\u265f", "light": true}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "\u265f", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "\u2659", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "\u2658", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "\u2659", "light": true}, {"piece": "\u2659", "light": false}, {"piece": "\u2659", "light": true}, {"piece": "\u2659", "light": false}, {"piece": "", "light": true}, {"piece": "\u2659", "light": false}, {"piece": "\u2659", "light": true}, {"piece": "\u2659", "light": false}, {"piece": "\u2656", "light": false}, {"piece": "\u2658", "light": true}, {"piece": "\u2657", "light": false}, {"piece": "\u2655", "light": true}, {"piece": "\u2654", "light": false}, {"piece": "\u2657", "light": true}, {"piece": "", "light": false}, {"piece": "\u2656", "light": true}], "prediction": "Nc6", "caption": "After committing Nf3, the model conditions on all visible tokens and predicts the next one: Nc6.", "detail": "Seen so far: <bos> e4 e5 Nf3. Predict next token: Nc6. Nf3 is one token: knight from g1 to f3.", "changed": [45, 62], "source": 62, "target": 45, "delay_ms": 1350}, {"label": "Nc6", "button_label": "Nc6", "context_len": 5, "focus_token_idx": 4, "board": [{"piece": "\u265c", "light": true}, {"piece": "", "light": false}, {"piece": "\u265d", "light": true}, {"piece": "\u265b", "light": false}, {"piece": "\u265a", "light": true}, {"piece": "\u265d", "light": false}, {"piece": "\u265e", "light": true}, {"piece": "\u265c", "light": false}, {"piece": "\u265f", "light": false}, {"piece": "\u265f", "light": true}, {"piece": "\u265f", "light": false}, {"piece": "\u265f", "light": true}, {"piece": "", "light": false}, {"piece": "\u265f", "light": true}, {"piece": "\u265f", "light": false}, {"piece": "\u265f", "light": true}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "\u265e", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "\u265f", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "\u2659", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "\u2658", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "\u2659", "light": true}, {"piece": "\u2659", "light": false}, {"piece": "\u2659", "light": true}, {"piece": "\u2659", "light": false}, {"piece": "", "light": true}, {"piece": "\u2659", "light": false}, {"piece": "\u2659", "light": true}, {"piece": "\u2659", "light": false}, {"piece": "\u2656", "light": false}, {"piece": "\u2658", "light": true}, {"piece": "\u2657", "light": false}, {"piece": "\u2655", "light": true}, {"piece": "\u2654", "light": false}, {"piece": "\u2657", "light": true}, {"piece": "", "light": false}, {"piece": "\u2656", "light": true}], "prediction": "Bb5", "caption": "After committing Nc6, the model conditions on all visible tokens and predicts the next one: Bb5.", "detail": "Seen so far: <bos> e4 e5 Nf3 Nc6. Predict next token: Bb5. Nc6 is one token: knight from b8 to c6.", "changed": [1, 18], "source": 1, "target": 18, "delay_ms": 1350}, {"label": "Bb5", "button_label": "Bb5", "context_len": 6, "focus_token_idx": 5, "board": [{"piece": "\u265c", "light": true}, {"piece": "", "light": false}, {"piece": "\u265d", "light": true}, {"piece": "\u265b", "light": false}, {"piece": "\u265a", "light": true}, {"piece": "\u265d", "light": false}, {"piece": "\u265e", "light": true}, {"piece": "\u265c", "light": false}, {"piece": "\u265f", "light": false}, {"piece": "\u265f", "light": true}, {"piece": "\u265f", "light": false}, {"piece": "\u265f", "light": true}, {"piece": "", "light": false}, {"piece": "\u265f", "light": true}, {"piece": "\u265f", "light": false}, {"piece": "\u265f", "light": true}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "\u265e", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": false}, {"piece": "\u2657", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "\u265f", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "\u2659", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "\u2658", "light": true}, {"piece": "", "light": false}, {"piece": "", "light": true}, {"piece": "\u2659", "light": true}, {"piece": "\u2659", "light": false}, {"piece": "\u2659", "light": true}, {"piece": "\u2659", "light": false}, {"piece": "", "light": true}, {"piece": "\u2659", "light": false}, {"piece": "\u2659", "light": true}, {"piece": "\u2659", "light": false}, {"piece": "\u2656", "light": false}, {"piece": "\u2658", "light": true}, {"piece": "\u2657", "light": false}, {"piece": "\u2655", "light": true}, {"piece": "\u2654", "light": false}, {"piece": "", "light": true}, {"piece": "", "light": false}, {"piece": "\u2656", "light": true}], "prediction": "a6", "caption": "After committing Bb5, the model conditions on all visible tokens and predicts the next one: a6.", "detail": "Seen so far: <bos> e4 e5 Nf3 Nc6 Bb5. Predict next token: a6. Bb5 is one token: bishop from f1 to b5.", "changed": [25, 61], "source": 61, "target": 25, "delay_ms": 1350}]};
+    const boardEl = document.querySelector('[data-demo-board]');
+    const historyEl = document.querySelector('[data-demo-history]');
+    const predictionEl = document.querySelector('[data-demo-prediction]');
+    const detailEl = document.querySelector('[data-demo-detail]');
+    const captionEl = document.querySelector('[data-demo-caption]');
+    const controlsEl = document.querySelector('[data-demo-controls]');
+    const toggleEl = document.querySelector('[data-demo-toggle]');
+    const restartEl = document.querySelector('[data-demo-restart]');
+    const boardCells = [];
+    const tokenChips = [];
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let activeIndex = 0;
+    let autoplayHandle = null;
+    let isPlaying = false;
+
+    function setupBoard() {
+      boardEl.innerHTML = '';
+      demoData.states[0].board.forEach((square) => {
+        const cell = document.createElement('div');
+        cell.className = `square ${square.light ? 'light' : 'dark'}`;
+        const piece = document.createElement('span');
+        piece.className = 'piece';
+        piece.textContent = square.piece;
+        cell.appendChild(piece);
+        boardEl.appendChild(cell);
+        boardCells.push(cell);
+      });
+    }
+
+    function setupTokens() {
+      historyEl.innerHTML = '';
+      demoData.tokens.forEach((token) => {
+        const chip = document.createElement('span');
+        chip.className = 'token-chip';
+        chip.textContent = token;
+        historyEl.appendChild(chip);
+        tokenChips.push(chip);
+      });
+    }
+
+    function renderBoard(state) {
+      const changed = new Set(state.changed || []);
+      boardCells.forEach((cell, idx) => {
+        const square = state.board[idx];
+        const pieceEl = cell.firstChild;
+        const classes = ['square', square.light ? 'light' : 'dark'];
+        if (changed.has(idx)) {
+          classes.push('changed');
+        }
+        if (state.source === idx) {
+          classes.push('source');
+        }
+        if (state.target === idx) {
+          classes.push('target');
+        }
+        cell.className = classes.join(' ');
+        if (pieceEl.textContent !== square.piece) {
+          pieceEl.textContent = square.piece;
+          pieceEl.classList.remove('pop');
+          void pieceEl.offsetWidth;
+          if (square.piece) {
+            pieceEl.classList.add('pop');
+          }
+        } else {
+          pieceEl.classList.remove('pop');
+        }
+      });
+    }
+
+    function renderTokens(state) {
+      tokenChips.forEach((chip, idx) => {
+        const visible = idx < state.context_len;
+        const current = state.focus_token_idx === idx;
+        const special = demoData.tokens[idx].startsWith('<');
+        const complete = visible && !current;
+        chip.className = [
+          'token-chip',
+          visible ? 'visible' : '',
+          complete ? 'complete' : '',
+          current ? 'current' : '',
+          special ? 'special' : '',
+        ].filter(Boolean).join(' ');
+      });
+      predictionEl.textContent = state.prediction || '?';
+      predictionEl.className = `prediction-chip${state.prediction ? ' show' : ''}`;
+      detailEl.textContent = state.detail || '';
+      captionEl.textContent = state.caption || '';
+    }
+
+    function renderControls(currentIndex) {
+      controlsEl.innerHTML = '';
+      demoData.states.forEach((state, idx) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = `demo-button${idx === currentIndex ? ' active' : ''}`;
+        button.textContent = state.button_label || state.label;
+        button.addEventListener('click', () => {
+          renderDemo(idx);
+          scheduleAutoplay();
+        });
+        controlsEl.appendChild(button);
+      });
+    }
+
+    function updateToggle() {
+      toggleEl.textContent = isPlaying ? 'Pause' : 'Play';
+    }
+
+    function stopAutoplay() {
+      if (autoplayHandle !== null) {
+        window.clearTimeout(autoplayHandle);
+        autoplayHandle = null;
+      }
+    }
+
+    function scheduleAutoplay() {
+      stopAutoplay();
+      if (!isPlaying) {
+        return;
+      }
+      const state = demoData.states[activeIndex];
+      const delay = state.delay_ms || 1500;
+      autoplayHandle = window.setTimeout(() => {
+        renderDemo((activeIndex + 1) % demoData.states.length);
+        scheduleAutoplay();
+      }, delay);
+    }
+
+    function renderDemo(index = 0) {
+      activeIndex = index;
+      const state = demoData.states[index];
+      renderBoard(state);
+      renderTokens(state);
+      renderControls(index);
+    }
+
+    toggleEl.addEventListener('click', () => {
+      isPlaying = !isPlaying;
+      updateToggle();
+      scheduleAutoplay();
+    });
+
+    restartEl.addEventListener('click', () => {
+      renderDemo(0);
+      isPlaying = true;
+      updateToggle();
+      scheduleAutoplay();
+    });
+
+    prefersReducedMotion.addEventListener('change', (event) => {
+      if (event.matches) {
+        isPlaying = false;
+        updateToggle();
+        stopAutoplay();
+      }
+    });
+
+    setupBoard();
+    setupTokens();
+    updateToggle();
+    renderDemo(0);
+    scheduleAutoplay();
+  </script>
 </body>
 </html>
