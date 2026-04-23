@@ -35,5 +35,27 @@
       </p>
     </section>
   </main>
+  <!-- Cloudflare Web Analytics -->
+  <script>
+    (function () {
+      const host = window.location.hostname;
+      const isLocal =
+        window.location.protocol === 'file:' ||
+        host === 'localhost' ||
+        host === '127.0.0.1' ||
+        host === '[::1]';
+
+      if (isLocal) {
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.defer = true;
+      script.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+      script.setAttribute('data-cf-beacon', '{"token": "67cde0995dfd4323bacc1eee0ab33aa2"}');
+      document.body.appendChild(script);
+    })();
+  </script>
+  <!-- End Cloudflare Web Analytics -->
 </body>
 </html>

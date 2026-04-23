@@ -70,10 +70,23 @@
     .viz.prose-viz {
       max-width: 38em;
     }
+    .viz.training-loss-viz {
+      max-width: 45em;
+    }
     .viz img {
       display: block;
       width: 100%;
       height: auto;
+    }
+    .figure-note {
+      max-width: 38em;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    .figure-note.training-loss-note {
+      max-width: 45em;
     }
     .demo-toolbar {
       display: flex;
@@ -504,19 +517,51 @@
       <h2>Model</h2>
       <p>
         I had not built transformers before, and I mainly wanted to get off the ground and start training something.
-        So I started from nanochat and kept its GPT backbone mostly the same: 12 layers, 6 attention heads, and an
-        embedding dimension of 768. That was not the result of much tuning. It was just a simple place to start that
-        already worked.
+        So I started from nanochat and kept its GPT backbone mostly the same. I did not spend much time tuning the
+        architecture. In practice, I just kept the same rough model size nanochat started from: 12 layers, 6
+        attention heads, and an embedding dimension of 768.
       </p>
       <p>
-        The part I thought about a bit more was context length. I was used to hearing about language models with huge
-        context windows, but chess did not seem like that kind of problem. Games are not that long, and most of what
-        matters seems to live in a pretty short move history.
+        The one place where chess seemed to change the setup was context length. In a language model, the next token
+        is predicted from all the tokens before it, so a large context window only helps if much earlier parts of the
+        sequence are still useful. nanochat also uses a small context window, but there that tradeoff can show up in
+        the quality of the outputs. In chess, once one token stands for one move, the useful context is basically just
+        the game so far. A game is short, so there was not much reason to pay for a huge window. I checked the
+        dataset to make sure 512 tokens were already enough to cover basically any full game I had, and they were.
+        That kept the setup small, and it kept training and inference cheap too. Once that was set, the more
+        interesting question was how to train it.
+      </p>
+    </section>
+
+    <section class="section article-section" id="training">
+      <h2>Training</h2>
+      <p>
+        I wanted to do this in a slightly zero-to-hero way at first. So the first training loops were just in a
+        notebook on my own computer, on only a few thousand games, where I could watch what each step was doing. I was
+        not trying to build a strong chess model yet. I just wanted to know if next-move prediction alone would do
+        anything at all.
       </p>
       <p>
-        The median game in the training set is 74 moves, and even the longest is 301
-        moves, so 512 tokens already leaves plenty of room. That felt like a better fit for the problem, and it also
-        made training and inference cheaper. Once that was set, the more interesting question was how to train it.
+        Once that seemed worth pushing a little further, I moved the same basic setup onto Modal so I could use a GPU
+        and just get more training steps in. The first sign was the loss. I was kind of thrilled when it started
+        dropping. Then the games started making more sense too. The model could get through openings, reach
+        recognizable middlegames, and sometimes even win.
+      </p>
+      <figure>
+        <div class="viz prose-viz training-loss-viz">
+          <img src="./figures/initial_plain_training_loss.svg" alt="Training and validation loss from an early plain next-move training run." />
+        </div>
+        <figcaption class="figure-note training-loss-note">I was embarrassingly excited by this plot.</figcaption>
+      </figure>
+      <p>
+        I kept sanity-checking it in direct ways too: letting it play full games, seeing whether the openings held
+        together, and later trying it against weak Stockfish. Once that first run worked, I mostly just wanted to make
+        it bigger and see what happened. So I kept the setup the same and scaled the obvious things. The data went
+        from a few thousand games in the notebook to roughly 500k games in the main training set, and the models got
+        bigger too. By then I could also make the checkpoints play each other, and the difference showed up pretty
+        quickly. In a 100-game match, the 8-layer model beat the smaller 4-layer one 53-1. The 12-layer one beat it
+        69-3. What I noticed more than the score was the way those games ended: the bigger models were much better at
+        actually finishing games, while the smaller one kept drifting into long draws.
       </p>
     </section>
     </article>
@@ -686,5 +731,27 @@
     renderDemo(0);
     scheduleAutoplay();
   </script>
+  <!-- Cloudflare Web Analytics -->
+  <script>
+    (function () {
+      const host = window.location.hostname;
+      const isLocal =
+        window.location.protocol === 'file:' ||
+        host === 'localhost' ||
+        host === '127.0.0.1' ||
+        host === '[::1]';
+
+      if (isLocal) {
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.defer = true;
+      script.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+      script.setAttribute('data-cf-beacon', '{"token": "67cde0995dfd4323bacc1eee0ab33aa2"}');
+      document.body.appendChild(script);
+    })();
+  </script>
+  <!-- End Cloudflare Web Analytics -->
 </body>
 </html>
