@@ -429,7 +429,7 @@
       <p class="kicker">Machine Learning / Chess</p>
       <h1>nanoDanya</h1>
       <p class="dek">
-        I built nanoDanya to teach myself how language models are trained. This is a small language model, and very much a software engineer's version of the project.
+        I had not built a language model before, and I wanted a contained problem to learn the whole stack. Chess came up mostly because it is a much smaller universe than language. I talked it through with a friend who understands LLMs much better than I do, and then I just went ahead with it. The first question was simple: can I take a game, turn each move into a token, train a tiny GPT, and sample the next likely move? That was enough to get started. After that, I mostly used the project to slow down and understand what each step even meant: the data, the tokens, the model, the training loop, the inference wrapper, and the benchmarks. I wanted to build one system and use it to understand how the whole thing fit together.
       </p>
     </section>
 
@@ -441,11 +441,11 @@
         word as its own token, the vocabulary would get out of hand very quickly.
       </p>
       <p>
-        Chess seemed more contained. A string like <code>Nf3</code> already means one complete move. So the natural question
+        Chess is much more closed-vocabulary than natural language. A string like <code>Nf3</code> already means one complete move. So the natural question
         was whether the model should predict <code>Nf3</code> directly as one token, or build it out of smaller pieces.
       </p>
       <p>
-        That seemed like the real tradeoff. Smaller tokens keep the vocabulary compact, but they also turn one chess move into
+        The tradeoff was straightforward. Smaller tokens keep the vocabulary compact, but they also turn one chess move into
         several prediction steps. Whole-move tokens make the vocabulary larger, but now one next-token prediction lines
         up with one chess decision. I liked the simplicity of that.
       </p>
@@ -466,7 +466,7 @@
         99% coverage.
       </p>
       <p>
-        So this does make the vocabulary bigger, but not by that much. In chess, it still feels reasonable to let one
+        So the vocabulary gets larger, but a few thousand move tokens is still manageable. In chess, it still feels reasonable to let one
         token stand for one move.
       </p>
       <p>
@@ -522,7 +522,7 @@
         attention heads, and an embedding dimension of 768.
       </p>
       <p>
-        The one place where chess seemed to change the setup was context length. In a language model, the next token
+        Context length was the one place where chess changed the setup. In a language model, the next token
         is predicted from all the tokens before it, so a large context window only helps if much earlier parts of the
         sequence are still useful. nanochat also uses a small context window, but there that tradeoff can show up in
         the quality of the outputs. In chess, once one token stands for one move, the useful context is basically just
@@ -556,12 +556,28 @@
       <p>
         I kept sanity-checking it in direct ways too: letting it play full games, seeing whether the openings held
         together, and later trying it against weak Stockfish. Once that first run worked, I mostly just wanted to make
-        it bigger and see what happened. So I kept the setup the same and scaled the obvious things. The data went
-        from a few thousand games in the notebook to roughly 500k games in the main training set, and the models got
-        bigger too. By then I could also make the checkpoints play each other, and the difference showed up pretty
-        quickly. In a 100-game match, the 8-layer model beat the smaller 4-layer one 53-1. The 12-layer one beat it
-        69-3. What I noticed more than the score was the way those games ended: the bigger models were much better at
-        actually finishing games, while the smaller one kept drifting into long draws.
+        it bigger and see what happened. So I kept the setup the same and scaled the obvious things. The first serious
+        version of that was roughly 500k games from players rated above 2000 Elo. The models got bigger too. By then
+        I could also make the checkpoints play each other, and the difference showed up pretty quickly. In a 100-game
+        match, the 8-layer model beat the smaller 4-layer one 53-1. The 12-layer one beat it 69-3. What I noticed
+        more than the score was the way those games ended: the bigger models were much better at actually finishing
+        games, while the smaller one kept drifting into long draws.
+      </p>
+      <p>
+        At some point I got curious about where the model was actually messing up. So I looked at the validation loss,
+        but broken out by move number instead of averaging everything together. For each real game, I stepped through
+        it move by move, checked the loss on the actual next move, and then grouped those losses by where they happened
+        in the game. The opening was mostly okay. The middlegame was where the loss started getting worse.
+      </p>
+      <figure>
+        <div class="viz prose-viz training-loss-viz">
+          <img src="./figures/loss_by_ply_plain_models.svg" alt="Held-out next-move loss by ply for the 4-layer, 8-layer, and 12-layer plain models, with the middlegame highlighted." />
+        </div>
+      </figure>
+      <p>
+        That was not very surprising. Openings are repetitive. The model sees the same structures and move sequences
+        over and over again there. By the middlegame, the game has branched out, the positions are sharper, and there
+        are just many more ways to be wrong.
       </p>
     </section>
     </article>

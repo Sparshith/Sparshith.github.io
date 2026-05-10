@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1040" height="400" viewBox="0 0 1040 400" role="img" aria-labelledby="title desc">
-  <title id="title">Training and validation loss for the early 8-layer chess model</title>
-  <desc id="desc">Most of the drop happens in the first ten thousand steps, then improvement slows down.</desc>
+  <title id="title">Training and validation loss for an early plain training run</title>
+  <desc id="desc">The loss starts dropping quickly, then keeps improving more slowly.</desc>
   <style>
     text { fill: #171717; }
     .serif { font-family: Georgia, 'Times New Roman', serif; }
@@ -12,10 +12,10 @@
     .val { stroke: #4d6c7e; }
   </style>
   <rect width="1040" height="400" fill="#fffdf9"/>
-  <text x="94" y="28" class="sans" font-size="12" font-weight="700" letter-spacing="1.5" fill="#b23a2a">FIRST GPU RUN</text>
-  <text x="94" y="62" class="serif" font-size="29" font-weight="600">The first big drop happened early</text>
+  <text x="94" y="28" class="sans" font-size="12" font-weight="700" letter-spacing="1.5" fill="#b23a2a">EARLY GPU RUN</text>
+  <text x="94" y="62" class="serif" font-size="29" font-weight="600">The first sign this might work</text>
   <rect x="94.00" y="108" width="176.79" height="242" fill="#f7f0e6"/>
-  <text x="182.39" y="128" class="sans muted" font-size="13" font-weight="600" text-anchor="middle">most of the drop</text>
+  <text x="182.39" y="128" class="sans muted" font-size="13" font-weight="600" text-anchor="middle">loss drops fastest here</text>
   <line x1="94" y1="334.20" x2="978" y2="334.20" class="grid"/>
   <text x="80" y="338.20" class="sans muted" font-size="12" text-anchor="end">2</text>
   <line x1="94" y1="271.00" x2="978" y2="271.00" class="grid"/>
