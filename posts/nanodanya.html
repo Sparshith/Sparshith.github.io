@@ -19,47 +19,18 @@
       font-size: 34px;
       margin-bottom: 14px;
     }
+    .article-section h3 {
+      margin: 22px 0 8px;
+      font-size: 22px;
+      line-height: 1.18;
+    }
+    .article-section h2 + h3 {
+      margin-top: 4px;
+    }
     .section {
       margin-top: 22px;
       padding-top: 16px;
       border-top: 1px solid var(--line);
-    }
-    .compare-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 14px;
-      margin: 18px 0 20px;
-    }
-    .compare-card {
-      min-height: 100%;
-      padding: 16px 18px 18px;
-      border: 1px solid var(--line);
-      background: #fffdf9;
-    }
-    .compare-card.emphasis {
-      background: #f7ece6;
-      border-color: #e5c9bc;
-    }
-    .compare-kicker {
-      margin: 0 0 10px;
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-    .compare-card h3 {
-      margin: 0 0 12px;
-      line-height: 1.15;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: 22px;
-      font-weight: 600;
-      color: var(--text);
-    }
-    .compare-card p {
-      margin: 0;
-      font-size: 17px;
-      line-height: 1.55;
     }
     .viz {
       width: 100%;
@@ -429,7 +400,10 @@
       <p class="kicker">Machine Learning / Chess</p>
       <h1>nanoDanya</h1>
       <p class="dek">
-        I had not built a language model before, and I wanted a contained problem to learn the whole stack. Chess came up mostly because it is a much smaller universe than language. I talked it through with a friend who understands LLMs much better than I do, and then I just went ahead with it. The first question was simple: can I take a game, turn each move into a token, train a tiny GPT, and sample the next likely move? That was enough to get started. After that, I mostly used the project to slow down and understand what each step even meant: the data, the tokens, the model, the training loop, the inference wrapper, and the benchmarks. I wanted to build one system and use it to understand how the whole thing fit together.
+        The starting question for nanoDanya was simple: can I take a chess game, turn each move into a token, train a tiny GPT, and sample the next likely move? I had not built a language model before, and chess felt like a contained way to learn the whole stack. It is still hard, but it is smaller than language in the ways I cared about: the board is fixed, the rules are fixed, and the whole game is just a sequence of moves.
+      </p>
+      <p>
+        After that, the project became a way to understand each part of the system slowly: the data, the tokenization, the model, the training loop, the inference wrapper, and the benchmarks. I wanted one small system where every design choice was visible.
       </p>
     </section>
 
@@ -473,44 +447,6 @@
         It also makes the experiment easier to read. The model is predicting chess moves directly, rather than
         assembling move notation a piece at a time.
       </p>
-      <p>
-        This is the part I liked in practice: one token, one move.
-      </p>
-      <figure>
-        <div class="viz">
-          <div class="demo-toolbar">
-            <div>
-              <div class="demo-kicker">Animated example</div>
-              <div class="demo-title">e4 e5 Nf3 Nc6 Bb5 -&gt; a6</div>
-            </div>
-            <div class="demo-transport">
-              <button type="button" class="transport-button" data-demo-toggle>Pause</button>
-              <button type="button" class="transport-button" data-demo-restart>Restart</button>
-            </div>
-          </div>
-          <div class="demo-split" data-demo-root>
-            <div class="board-wrap">
-              <div class="board-label">Reconstructed board</div>
-              <div class="board-grid" data-demo-board></div>
-              <div class="board-legend">
-                <span class="legend-chip"><span class="legend-swatch source"></span> origin square</span>
-                <span class="legend-chip"><span class="legend-swatch target"></span> destination square</span>
-              </div>
-            </div>
-            <div class="demo-right">
-              <div class="history-label">Conditioning context (tokens up to n)</div>
-              <div class="token-strip" data-demo-history></div>
-              <div class="prediction-box">
-                <div class="prediction-label">Model predicts token n+1</div>
-                <div class="prediction-chip" data-demo-prediction>?</div>
-              </div>
-              <div class="demo-detail" data-demo-detail></div>
-              <div class="demo-caption" data-demo-caption></div>
-              <div class="demo-controls" data-demo-controls></div>
-            </div>
-          </div>
-        </div>
-      </figure>
     </section>
 
     <section class="section article-section" id="model">
@@ -556,7 +492,7 @@
       <p>
         I kept sanity-checking it in direct ways too: letting it play full games, seeing whether the openings held
         together, and later trying it against weak Stockfish. Once that first run worked, I mostly just wanted to make
-        it bigger and see what happened. So I kept the setup the same and scaled the obvious things. The first serious
+        it bigger and see what happened. So I kept the setup the same and increased the obvious things. The first serious
         version of that was roughly 500k games from players rated above 2000 Elo. The models got bigger too. By then
         I could also make the checkpoints play each other, and the difference showed up pretty quickly. In a 100-game
         match, the 8-layer model beat the smaller 4-layer one 53-1. The 12-layer one beat it 69-3. What I noticed
@@ -579,6 +515,184 @@
         over and over again there. By the middlegame, the game has branched out, the positions are sharper, and there
         are just many more ways to be wrong.
       </p>
+      <p>
+        Around the same time, I had also started playing with Lichess puzzles as a separate dataset. That made the
+        next hypothesis tempting: if the model was struggling in the middlegame, maybe it needed sharper tactical
+        games. At first I expected puzzles to be the important ingredient.
+      </p>
+      <p>
+        To check that, I trained the same kind of model twice, changing only the games it saw. One model got roughly
+        500k actual games from players rated above 2000. Another got 500k full games that happened to contain Lichess
+        puzzles. If puzzle-linked games were automatically better, this should have shown up.
+      </p>
+      <p>
+        It did not. The normal 500k-game model actually beat the puzzle-linked one. That was useful. It ruled out the
+        cleanest version of the puzzle story.
+      </p>
+      <p>
+        What did work was adding more games. When I took the same plain next-move setup from 500k actual games to
+        about 3M actual games, it became much stronger. When I gave the puzzle-linked version roughly five million
+        games, that improved too. That was a little annoying, because it made the result less clean, but also more
+        interesting.
+      </p>
+      <p>
+        The best model is still the large puzzle-linked one. But I no longer think the right sentence is "puzzles made
+        it good." A more honest sentence is: the plain model keeps getting better when I give it many more good games.
+        Whether puzzle-linked games are better than normal games at the same size is still open.
+      </p>
+      <p>
+        This matters because the project is trying to make the language model internalize chess, not hide mistakes in
+        the wrapper. Runtime legality checks can keep games running, but they are not the prize. The model that moved
+        the project forward was not the one with the cleverest inference trick or training trick. It was
+        the plain model trained on enough good move sequences that it needed those tricks less often.
+      </p>
+      <p>
+        I am still playing with two other training ideas. One is giving extra weight to the actual puzzle solution
+        moves inside full games. The other is asking the model to learn a rough position evaluation alongside the next
+        move. I want to try both a bit more before writing much about them.
+      </p>
+    </section>
+
+    <section class="section article-section" id="inference">
+      <h2>Inference</h2>
+      <p>
+        After training, the basic loop is almost embarrassingly small. Start with <code>&lt;bos&gt;</code>, feed the
+        tokens so far through the model, look at the logits at the last position, and choose one next token. If that
+        token is <code>e4</code>, I push <code>e4</code> onto a chess board and repeat.
+      </p>
+      <p>
+        This is the part I liked in practice: one token, one move.
+      </p>
+      <figure>
+        <div class="viz">
+          <div class="demo-toolbar">
+            <div>
+              <div class="demo-kicker">Animated example</div>
+              <div class="demo-title">e4 e5 Nf3 Nc6 Bb5 -&gt; a6</div>
+            </div>
+            <div class="demo-transport">
+              <button type="button" class="transport-button" data-demo-toggle>Pause</button>
+              <button type="button" class="transport-button" data-demo-restart>Restart</button>
+            </div>
+          </div>
+          <div class="demo-split" data-demo-root>
+            <div class="board-wrap">
+              <div class="board-label">Reconstructed board</div>
+              <div class="board-grid" data-demo-board></div>
+              <div class="board-legend">
+                <span class="legend-chip"><span class="legend-swatch source"></span> origin square</span>
+                <span class="legend-chip"><span class="legend-swatch target"></span> destination square</span>
+              </div>
+            </div>
+            <div class="demo-right">
+              <div class="history-label">Conditioning context (tokens up to n)</div>
+              <div class="token-strip" data-demo-history></div>
+              <div class="prediction-box">
+                <div class="prediction-label">Model predicts token n+1</div>
+                <div class="prediction-chip" data-demo-prediction>?</div>
+              </div>
+              <div class="demo-detail" data-demo-detail></div>
+              <div class="demo-caption" data-demo-caption></div>
+              <div class="demo-controls" data-demo-controls></div>
+            </div>
+          </div>
+        </div>
+      </figure>
+      <p>
+        For actually playing games, I usually add a legal-move filter before sampling. That keeps the game alive, but it
+        is also a hack in exactly the place where I would rather not have one. It lets the wrapper remove moves the
+        model should have known not to say. So it answers a narrower question: what does the model choose among legal
+        moves? It does not answer the more interesting question of whether the model knew the move was legal in the
+        first place.
+      </p>
+      <p>
+        The other small piece is stopping. The dataset has <code>&lt;eos&gt;</code>, so the model can learn to end games
+        too. In practice I still keep boring guardrails like a maximum move count, because otherwise one bad sample can
+        turn an experiment into an infinite game. That is useful engineering, but it also goes slightly against the
+        spirit of the project. I want the model to learn when a game is over, not rely on the harness to rescue it.
+      </p>
+      <p>
+        I put this behind a Lichess bot mostly because it forced the loop to be real. Instead of sampling games in a
+        notebook, the model has to answer one position at a time against whoever challenges it. The model-facing part is
+        still the same: the moves so far go in, one next move comes out. You can challenge
+        <a href="https://lichess.org/@/nanoDanya">nanoDanya on Lichess</a>; under the hood it is still the same loop,
+        waiting for a position and answering with one move.
+      </p>
+    </section>
+
+    <section class="section article-section" id="benchmarking">
+      <h2>Benchmarking</h2>
+      <h3>Making games cheap enough to run</h3>
+      <p>
+        The least scientific benchmark was that I played against the model myself. That was useful for a while. It made
+        the failures easy to feel. If the model hung a queen, repeated nonsense, or drifted into a dead ending, I
+        noticed immediately. At one point the Lichess bot even beat me as Black, which was not real evidence of
+        strength, but was at least a good deployment sanity check: the same next-token loop made it through a real game
+        and I resigned.
+      </p>
+      <p>
+        That was a fun way to poke at it, but it was a terrible way to measure anything. I could play one game, maybe
+        a few, and notice obvious problems. It was not enough to say one checkpoint was actually better than another.
+      </p>
+      <p>
+        Once I stopped being the benchmark, the next problem was speed. To compare two checkpoints, I need a small
+        program to keep the boards, ask each model for moves, apply the moves, and record the results. My first version
+        did that one game at a time. That meant one tiny model call for one position, then a board update, then another
+        tiny model call. A 200-game comparison took around six minutes locally.
+      </p>
+      <p>
+        The fix was to make each model call do more work. Instead of asking for the next move in one game, I kept many
+        unfinished games open and asked for the next move in all of them together. That is batch inference: the model sees
+        many positions in one forward pass, and the GPU is less idle. Modal helped because I could run the same
+        checkpoint-vs-checkpoint comparison on a few remote GPU workers. For a 200-game run, each worker plays a different
+        range of games from the same matchup, and the script merges those game records into one result. Two things changed
+        at once here: I batched the model calls, and I stopped running everything on my laptop. The practical result was
+        still the thing I cared about: the same 200-game comparison now finishes in under a minute.
+      </p>
+
+      <h3>What I compared</h3>
+      <p>
+        The benchmark story is mostly about two plain next-move families. The first is actual-game data: the original
+        500k-game baseline, and a later 3M-game version trained the same way on more games. The second is puzzle-linked
+        data: a 500k-game control, and a much larger full run with 5M games.
+      </p>
+      <p>
+        The important part is that all four are still the simple version of the project: predict the next move token from
+        the moves so far. No tactical upweighting, no eval head, no new architecture. That keeps the comparison focused:
+        what changed was mostly the source of the games and the amount of data.
+      </p>
+
+      <h3>Raw legality</h3>
+      <p>
+        The first benchmark I care about is also the simplest one: before any legal-move filter, is the model's
+        favorite move actually legal? That felt closer to the point of the project. I do not just want a wrapper that
+        can steer a model through chess. I want the model to learn enough chess that its first instinct is usually a
+        real move.
+      </p>
+      <p>
+        Inside the actual-game family, scale helped. The 3M-game model got much cleaner than the original 500k-game
+        baseline. Its first-choice move was illegal in 2.27% of positions, compared with 5.54% for the 500k baseline.
+      </p>
+      <p>
+        The large puzzle-linked model was still cleaner. Its first-choice move was illegal in only 1.05% of positions.
+        That is the best raw legality result I have in this group. But it also saw more games than the 3M actual-game
+        model, so it is not a clean source-only comparison.
+      </p>
+
+      <h3>Head-to-head games</h3>
+      <p>
+        The easiest benchmark to understand is still to let two checkpoints play each other. I used that a lot, because
+        it catches things that loss curves do not. A model can have a nice validation loss and still make strange
+        choices when the game gets long. Full games make that visible. But these games still use the legal-move filter
+        from the inference loop, so I read them next to the raw legality numbers, not instead of them.
+      </p>
+      <p>
+        In those games, the same pattern showed up. The 3M actual-game model was much stronger than the 500k actual-game
+        baseline, scoring 78.5% against it. The large puzzle-linked model still beat the 3M actual-game model, scoring
+        77.5% from the other side. That comparison is useful, but it is not size-matched: the puzzle-linked model saw
+        5M games, while the actual-game model saw 3M.
+      </p>
+
     </section>
     </article>
   </main>
@@ -747,27 +861,5 @@
     renderDemo(0);
     scheduleAutoplay();
   </script>
-  <!-- Cloudflare Web Analytics -->
-  <script>
-    (function () {
-      const host = window.location.hostname;
-      const isLocal =
-        window.location.protocol === 'file:' ||
-        host === 'localhost' ||
-        host === '127.0.0.1' ||
-        host === '[::1]';
-
-      if (isLocal) {
-        return;
-      }
-
-      const script = document.createElement('script');
-      script.defer = true;
-      script.src = 'https://static.cloudflareinsights.com/beacon.min.js';
-      script.setAttribute('data-cf-beacon', '{"token": "67cde0995dfd4323bacc1eee0ab33aa2"}');
-      document.body.appendChild(script);
-    })();
-  </script>
-  <!-- End Cloudflare Web Analytics -->
 </body>
 </html>
