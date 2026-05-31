@@ -1113,18 +1113,17 @@
         middlegame, the game has branched out, the positions are sharper, and there are many more ways to be wrong.
       </p>
       <p>
-        The next experiments changed the data: puzzle-linked full games, which might expose sharper middlegames, and
-        larger ordinary-game runs, which would simply put more good move sequences in front of the model.
+        I tried changing the data next. One run used full games that contained puzzle positions, hoping those games would
+        include sharper middlegames. The other direction was simpler: use more ordinary high-Elo games. That gave me five
+        main comparisons: 500k actual games, 500k puzzle-linked games, 5M actual games, 5M puzzle-linked games, and later
+        15M actual games. The architecture and next-move objective stayed mostly fixed, so the benchmark was mostly about
+        data source and data scale.
       </p>
       <p>
-        The comparison set became a small ladder: 500k actual games, 500k puzzle-linked games, 5M actual games, 5M
-        puzzle-linked games, and later 15M actual games. I kept the architecture and next-move objective mostly fixed so
-        the benchmarks could separate data source from data scale.
-      </p>
-      <p>
-        I am also testing more targeted ideas: extra hard examples around checks, pins, and king safety, and a rough
-        position-evaluation auxiliary task. Those are still side experiments. The main runs kept the next-move objective
-        fixed so the measurements would say something about the language-model objective itself.
+        <a href="https://modal.com/">Modal</a> was genuinely excellent here. The part I appreciated most was that it
+        stayed out of the way. The training script was still just Python; the wrapper said, more or less: mount this
+        repo, use this volume, give me an A100. I ran it from my terminal and the logs came back there. For a project
+        built out of changing one thing and running it again, that mattered a lot.
       </p>
     </section>
 
@@ -1174,9 +1173,8 @@
         </div>
       </figure>
       <p>
-        For actual games, I usually filter to legal moves before sampling. That keeps the game alive, but it lets the
-        wrapper remove moves the model should have rejected on its own. With legal filtering, the game no longer tests
-        whether the model rejects illegal moves. It tests which legal move it prefers.
+        For actual games, I usually sample only from legal moves. That keeps games alive, but it means those games test
+        move choice after the legality wrapper, not whether the model rejects illegal moves on its own.
       </p>
       <p>
         Game endings have the same problem. The dataset has <code>&lt;eos&gt;</code>, so the model can learn to end games. In
@@ -1200,12 +1198,8 @@
         even beat me as Black. That was fun, but it did not tell me whether one checkpoint was better than another.
       </p>
       <p>
-        The game runner also hid one failure mode. Head-to-head matches usually use the legal-move filter from the
-        inference loop. That keeps games playable, but it can hide the illegal moves the model wanted to play first.
-      </p>
-      <p>
-        I used two checks together. Raw legality asks whether the model's top unfiltered move is legal.
-        Head-to-head games ask, after both models are kept inside legal chess, which one plays better.
+        Because of that wrapper, I separated legality from playing strength. First I checked whether the model's top
+        unfiltered move was legal. Then I let models play each other with both sides kept inside legal chess.
       </p>
 
       <h3>Raw legality</h3>
@@ -1693,24 +1687,12 @@
       </p>
       <p>
         Early on, I was mostly asking, "will it even make a legal move?" By the end, that was not the main drama. The
-        model would play something that looked like chess, and then lose for ordinary chess reasons: it missed what was
-        happening on the board, or could not turn a good position into a win.
+        model would play something that looked like chess, then lose because it missed what was happening on the board or
+        could not turn a good position into a win.
       </p>
       <p>
-        That is a nice place for this to land. It is not a chess engine, and stronger opponents still show the gaps. But
-        it is a small language model trained on move strings that learned enough chess for the next problems to actually
-        be chess problems.
-      </p>
-      <p>
-        <a href="https://modal.com/">Modal</a> was genuinely excellent here. The part I appreciated most was that it
-        stayed out of the way. The training script was still just Python; the wrapper said, more or less: mount this
-        repo, use this volume, give me an A100. I ran it from my terminal and the logs came back there. That fit the
-        project perfectly: change one thing, run it again, check the result.
-      </p>
-      <p>
-        I learned a lot of chess from Daniel Naroditsky's videos, not just moves, but how to slow a position down until
-        it made sense. His teaching is part of why I cared enough about chess to build this, so nanoDanya felt like the
-        right name.
+        It is not a chess engine, and stronger opponents still show the gaps. But it is a small language model trained on
+        move strings that learned enough chess for the next problems to actually be chess problems.
       </p>
     </section>
     </article>
