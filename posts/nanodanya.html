@@ -1032,7 +1032,12 @@
       <p>
         I started from nanochat and kept its GPT backbone mostly unchanged. I did try a few depths early, but I was not
         trying to invent a new architecture. The main version settled at 12 layers, 6 attention heads, and a 768-wide
-        embedding.
+        embedding. That size stayed close to the nanochat defaults, fit comfortably on a single A100, and was large enough
+        to test the data and tokenization before trying a bunch of model sizes and shapes.
+      </p>
+      <p>
+        The full run cost about $30 on Modal, roughly what Modal's starter plan includes as free compute each month. I
+        could rerun experiments without thinking too hard about the bill.
       </p>
       <p>
         Context length had a real training cost here. Attention has to run across the tokens in the window, so making the
