@@ -39,7 +39,7 @@
       padding: 8px;
     }
     .viz.prose-viz {
-      max-width: 38em;
+      max-width: 45em;
     }
     .viz.training-loss-viz {
       max-width: 45em;
@@ -58,6 +58,523 @@
     }
     .figure-note.training-loss-note {
       max-width: 45em;
+    }
+    .source-flow-viz,
+    .model-flow-viz {
+      max-width: 45em;
+      margin: 20px 0 18px;
+    }
+    .source-flow {
+      display: grid;
+      gap: 10px;
+      padding: 16px;
+      background: #fffdfa;
+    }
+    .source-flow-row {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) 30px minmax(0, 1.25fr);
+      gap: 10px;
+      align-items: stretch;
+    }
+    .source-box,
+    .format-box,
+    .budget-panel {
+      border: 1px solid #e3dcd2;
+      background: #ffffff;
+      padding: 14px;
+    }
+    .source-box {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-height: 108px;
+    }
+    .source-kicker,
+    .cost-kicker {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .source-title,
+    .cost-title {
+      color: var(--text);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 21px;
+      font-weight: 600;
+      line-height: 1.16;
+    }
+    .source-copy,
+    .cost-copy {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+    .source-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #b23a2a;
+      font-size: 22px;
+      font-weight: 700;
+    }
+    .format-box {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 10px;
+      background: #f9f6f0;
+    }
+    .stream-tokens {
+      display: flex;
+      gap: 6px;
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+    }
+    .stream-token {
+      border: 1px solid #d8cec0;
+      background: #ffffff;
+      padding: 5px 8px;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .context-window-viz {
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+      background: #fffdfa;
+    }
+    .context-example {
+      display: grid;
+      grid-template-columns: 110px minmax(0, 1fr) 96px;
+      gap: 12px;
+      align-items: center;
+      border: 1px solid #e3dcd2;
+      background: #ffffff;
+      padding: 12px;
+    }
+    .context-label strong {
+      display: block;
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.1;
+    }
+    .context-label span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.25;
+    }
+    .history-strip {
+      display: flex;
+      min-width: 0;
+      gap: 5px;
+      flex-wrap: wrap;
+      align-items: center;
+      border: 1px solid #d8cec0;
+      background: #f9f6f0;
+      padding: 8px;
+    }
+    .history-chip,
+    .next-chip {
+      border: 1px solid #d8cec0;
+      background: #ffffff;
+      padding: 4px 7px;
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .history-chip.faded {
+      color: #8f877e;
+      background: #f3eee7;
+    }
+    .next-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px;
+      color: var(--accent);
+      background: #fff7f4;
+      border-color: rgba(178, 58, 42, 0.38);
+      font-size: 12px;
+      text-align: center;
+      box-shadow: inset 3px 0 0 rgba(178, 58, 42, 0.55);
+    }
+    .benchmark-table {
+      width: 100%;
+      max-width: 45em;
+      margin: 20px 0 18px;
+      border-collapse: collapse;
+      background: #fff;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+    .legality-table {
+      max-width: 46em;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 14px;
+      line-height: 1.35;
+      background: #fffdfa;
+    }
+    .benchmark-table th,
+    .benchmark-table td {
+      padding: 10px 12px;
+      border-top: 1px solid var(--line);
+      vertical-align: top;
+      text-align: left;
+    }
+    .legality-table th,
+    .legality-table td {
+      padding: 13px 12px;
+      background: #fffdfa;
+      border-top: 1px solid #e3dcd2;
+      border-left: 1px solid #e3dcd2;
+    }
+    .legality-table th:first-child,
+    .legality-table td:first-child {
+      border-left: 0;
+    }
+    .legality-table th:not(:first-child),
+    .legality-table td:not(:first-child) {
+      text-align: right;
+    }
+    .legality-table th:not(:first-child) {
+      text-align: center;
+    }
+    .legality-table th:first-child,
+    .legality-table td:first-child {
+      width: 34%;
+    }
+    .benchmark-table tr:first-child th {
+      border-top: 0;
+    }
+    .benchmark-table th {
+      color: var(--text);
+      font-weight: 700;
+    }
+    .benchmark-table td {
+      color: var(--muted);
+    }
+    .benchmark-table .number {
+      color: var(--accent);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .benchmark-table .number.good {
+      color: var(--accent);
+    }
+    .api-model-table {
+      width: 100%;
+      max-width: 47em;
+      margin: 20px 0 8px;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: #fffdfa;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+    .api-model-table th,
+    .api-model-table td {
+      padding: 12px 12px;
+      border-top: 1px solid #e3dcd2;
+      vertical-align: middle;
+    }
+    .api-model-table thead th {
+      border-top: 0;
+      color: #6d665f;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      line-height: 1.2;
+      text-align: left;
+      text-transform: uppercase;
+    }
+    .api-model-table .model-col {
+      width: 35%;
+    }
+    .api-model-table .legal-col {
+      width: 24%;
+    }
+    .api-model-table .phase-col {
+      width: 41%;
+    }
+    .api-model-table .model-name {
+      display: block;
+      color: var(--text);
+      font-weight: 700;
+      line-height: 1.25;
+    }
+    .api-model-table .model-family {
+      display: block;
+      margin-top: 3px;
+      color: #8a8178;
+      font-size: 12px;
+      line-height: 1.25;
+    }
+    .api-model-table .legal-value {
+      display: block;
+      color: var(--text);
+      font-size: 18px;
+      font-variant-numeric: tabular-nums;
+      font-weight: 750;
+      letter-spacing: 0;
+      line-height: 1;
+    }
+    .api-model-table .legal-track {
+      display: block;
+      width: 100%;
+      height: 6px;
+      margin-top: 8px;
+      overflow: hidden;
+      background: #e7e1d8;
+    }
+    .api-model-table .legal-fill {
+      display: block;
+      height: 100%;
+      background: #86b98a;
+    }
+    .api-model-table .legal-fill.mid {
+      background: #c8b46a;
+    }
+    .api-model-table .legal-fill.low {
+      background: #cf8f85;
+    }
+    .api-model-table .phase-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .api-model-table .phase-label {
+      display: block;
+      margin-bottom: 3px;
+      color: #8a8178;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+    .api-model-table .phase-value {
+      color: #2f3742;
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+    .legality-table .number.good {
+      color: var(--muted);
+    }
+    .legality-table .best {
+      background: #eef5ec;
+      color: #276542;
+    }
+    .stockfish-table {
+      max-width: 45em;
+    }
+    .stockfish-grid {
+      min-width: 0;
+    }
+    .stockfish-grid .row-model {
+      width: 220px;
+    }
+    .h2h-wrap {
+      width: 100%;
+      max-width: 46em;
+      margin: 20px 0 8px;
+      overflow-x: auto;
+      background: #fffdfa;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .h2h-table {
+      width: 100%;
+      min-width: 740px;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+    .h2h-table th,
+    .h2h-table td {
+      padding: 13px 12px;
+      border-top: 1px solid #e3dcd2;
+      border-left: 1px solid #e3dcd2;
+      text-align: center;
+      vertical-align: middle;
+    }
+    .h2h-table tr:first-child th {
+      border-top: 0;
+    }
+    .h2h-table th:first-child,
+    .h2h-table td:first-child {
+      border-left: 0;
+    }
+    .h2h-table th {
+      color: var(--text);
+      font-weight: 700;
+    }
+    .h2h-table tr:first-child th {
+      background: #fffdfa;
+      color: var(--text);
+    }
+    .h2h-table .row-model {
+      width: 132px;
+      text-align: left;
+      background: #fffdfa;
+      position: sticky;
+      left: 0;
+      z-index: 1;
+      box-shadow: 1px 0 0 #e3dcd2;
+    }
+    .h2h-table tr:first-child .row-model {
+      z-index: 2;
+      background: #fffdfa;
+      box-shadow: 1px 0 0 #e3dcd2;
+    }
+    .h2h-table .played {
+      background: #fff;
+    }
+    .h2h-table .score {
+      display: block;
+      font-size: 16px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .h2h-table .score-bar {
+      display: block;
+      width: 86px;
+      height: 5px;
+      margin: 7px auto 0;
+      background: #eee8de;
+      overflow: hidden;
+    }
+    .h2h-table .score-fill {
+      display: block;
+      height: 100%;
+      background: #c8b46a;
+    }
+    .h2h-table .score-fill.win {
+      background: #86b98a;
+    }
+    .h2h-table .score-fill.loss {
+      background: #cf8f85;
+    }
+    .h2h-table .diagonal {
+      color: #aaa197;
+      background: #fbf8f3;
+      font-size: 16px;
+    }
+    .article-section .h2h-note {
+      max-width: 46em;
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    @media (max-width: 640px) {
+      .benchmark-table {
+        display: block;
+        font-size: 15px;
+      }
+      .benchmark-table tbody,
+      .benchmark-table tr,
+      .benchmark-table td {
+        display: block;
+      }
+      .benchmark-table tr:first-child {
+        display: none;
+      }
+      .benchmark-table tr {
+        padding: 10px 0;
+        border-top: 1px solid var(--line);
+      }
+      .benchmark-table tr:first-child + tr {
+        border-top: 0;
+      }
+      .benchmark-table td {
+        padding: 4px 12px;
+        border-top: 0;
+      }
+      .benchmark-table td::before {
+        content: attr(data-label);
+        display: block;
+        margin-bottom: 2px;
+        color: var(--text);
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1.3;
+      }
+      .api-model-table,
+      .api-model-table thead,
+      .api-model-table tbody,
+      .api-model-table tr,
+      .api-model-table td {
+        display: block;
+      }
+      .api-model-table {
+        font-size: 14px;
+      }
+      .api-model-table thead {
+        display: none;
+      }
+      .api-model-table tr {
+        padding: 12px 0;
+        border-top: 1px solid #e3dcd2;
+      }
+      .api-model-table tr:first-child {
+        border-top: 0;
+      }
+      .api-model-table td {
+        padding: 4px 12px;
+        border-top: 0;
+      }
+      .api-model-table .model-col,
+      .api-model-table .legal-col,
+      .api-model-table .phase-col {
+        width: 100%;
+      }
+      .api-model-table .legal-cell {
+        margin-top: 8px;
+      }
+      .api-model-table .legal-track {
+        max-width: 150px;
+      }
+      .api-model-table .phase-grid {
+        margin-top: 8px;
+        max-width: 320px;
+      }
+      .h2h-wrap {
+        max-width: 100%;
+      }
+      .h2h-table {
+        min-width: 740px;
+      }
+      .source-flow-row {
+        grid-template-columns: 1fr;
+      }
+      .source-arrow {
+        min-height: 22px;
+        transform: rotate(90deg);
+      }
+      .stream-tokens {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+      }
+      .context-example {
+        grid-template-columns: 1fr;
+        gap: 9px;
+      }
     }
     .demo-toolbar {
       display: flex;
@@ -383,8 +900,6 @@
       }
     }
   </style>
-  <meta name="description" content="Notes on nanoDanya, an experiment in language-model chess.">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2">
 </head>
 <body>
   <header class="site-shell site-header">
@@ -400,34 +915,29 @@
       <p class="kicker">Machine Learning / Chess</p>
       <h1>nanoDanya</h1>
       <p>
-        The starting question for nanoDanya was simple: can I take a chess game, turn each move into a token, train a tiny GPT, and sample the next likely move? I had not built a language model before, and chess felt like a contained way to learn the whole stack. It is still hard, but it is smaller than language in the ways I cared about: the board is fixed, the rules are fixed, and the whole game is just a sequence of moves.
+        nanoDanya started with one question: can a tiny GPT play chess if every move is a token and the only job is to predict the next one? I had not built a language model before, and chess was small enough to try. The board is fixed, the rules are fixed, and a game can be written down as a list of moves.
       </p>
       <p>
-        After that, the project became a way to understand each part of the system slowly: the data, the tokenization, the model, the training loop, the inference wrapper, and the benchmarks. I wanted one small system where every design choice was visible.
+        The result was a small system where I could change one thing and inspect the games.
       </p>
     </section>
 
     <section class="section article-section" id="vocabulary">
       <h2>Vocabulary</h2>
       <p>
-        One of the first choices was tokenisation. For normal language, nanochat uses BPE. That makes sense because
+        One of the first choices was tokenization. For normal language, nanochat uses BPE. That makes sense because
         language keeps producing new words, names, spellings, and variations. If you tried to treat every full
         word as its own token, the vocabulary would get out of hand very quickly.
       </p>
       <p>
-        Chess is much more closed-vocabulary than natural language. A string like <code>Nf3</code> already means one complete move. So the natural question
-        was whether the model should predict <code>Nf3</code> directly as one token, or build it out of smaller pieces.
+        Chess is much more closed-vocabulary than natural language. A string like <code>Nf3</code> already means one complete move,
+        so I tried treating whole moves as tokens. Smaller tokens keep the vocabulary compact, but split a move
+        across several predictions. Whole-move tokens cost more vocabulary, but they make the model choose moves
+        directly.
       </p>
       <p>
-        The tradeoff was straightforward. Smaller tokens keep the vocabulary compact, but they also turn one chess move into
-        several prediction steps. Whole-move tokens make the vocabulary larger, but now one next-token prediction lines
-        up with one chess decision. I liked the simplicity of that.
-      </p>
-      <p>
-        To sanity-check this, I looked at the dataset. I wanted to know how many distinct SAN moves actually show up,
-        and whether the distribution is broad or repetitive. It turned out to be much more repetitive than I expected:
-        there are 4,517 distinct move tokens, the top 100 already cover 47.6% of all move
-        tokens, and the top 500 reach 91.5%.
+        To sanity-check this, I looked at an early rough dataset. The same moves kept showing up, and the distribution
+        was highly repetitive.
       </p>
       <figure>
         <div class="viz prose-viz">
@@ -435,53 +945,146 @@
         </div>
       </figure>
       <p>
-        Another way to say it is that only 110 moves (2.4% of the move vocabulary) cover
-        half of all move tokens, and 830 moves (18.4%) are enough to reach
-        99% coverage.
+        The exact counts changed as the dataset changed, but the common moves still covered most tokens. The vocabulary
+        was not exploding. Whole-move tokenization was viable: the model could predict a move, not a fragment of
+        move notation.
+      </p>
+    </section>
+
+    <section class="section article-section" id="data">
+      <h2>Data</h2>
+      <p>
+        Once a move was the token, I had to choose the games. The training examples were just games written out as moves.
       </p>
       <p>
-        So the vocabulary gets larger, but a few thousand move tokens is still manageable. In chess, it still feels reasonable to let one
-        token stand for one move.
+        The model needed reasonably good games, and the
+        <a href="https://database.lichess.org/">public Lichess dataset</a> made that easy. I started with ordinary
+        games where both players were around 2000 Elo or higher. Later I tried puzzle-linked games too. They were still
+        full games, not puzzle prompts, so the training format stayed the same.
       </p>
+      <figure>
+        <div class="viz source-flow-viz">
+          <div class="source-flow" aria-label="Two game sources use the same move-token training format">
+            <div class="source-flow-row">
+              <div class="source-box">
+                <div class="source-kicker">Source A</div>
+                <div class="source-title">Ordinary games</div>
+                <p class="source-copy">Normal games from stronger players, filtered into a plain baseline.</p>
+              </div>
+              <div class="source-arrow" aria-hidden="true">&#8594;</div>
+              <div class="format-box">
+                <div class="source-kicker">Training format</div>
+                <div class="source-title">one line is one game</div>
+                <div class="stream-tokens" aria-label="Example ordinary game move tokens">
+                  <span class="stream-token">&lt;bos&gt;</span>
+                  <span class="stream-token">e4</span>
+                  <span class="stream-token">e5</span>
+                  <span class="stream-token">Nf3</span>
+                  <span class="stream-token">&hellip;</span>
+                  <span class="stream-token">&lt;eos&gt;</span>
+                </div>
+              </div>
+            </div>
+            <div class="source-flow-row">
+              <div class="source-box">
+                <div class="source-kicker">Source B</div>
+                <div class="source-title">Puzzle-linked games</div>
+                <p class="source-copy">Full games that contain puzzle positions, still written as ordinary moves.</p>
+              </div>
+              <div class="source-arrow" aria-hidden="true">&#8594;</div>
+              <div class="format-box">
+                <div class="source-kicker">Training format</div>
+                <div class="source-title">one line is one game</div>
+                <div class="stream-tokens" aria-label="Example puzzle-linked game move tokens">
+                  <span class="stream-token">&lt;bos&gt;</span>
+                  <span class="stream-token">d4</span>
+                  <span class="stream-token">Nf6</span>
+                  <span class="stream-token">c4</span>
+                  <span class="stream-token">&hellip;</span>
+                  <span class="stream-token">&lt;eos&gt;</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </figure>
       <p>
-        It also makes the experiment easier to read. The model is predicting chess moves directly, rather than
-        assembling move notation a piece at a time.
+        Because the format stayed fixed, I could swap the games and ask the same next-move question, then compare
+        better-picked games against more games.
       </p>
     </section>
 
     <section class="section article-section" id="model">
       <h2>Model</h2>
       <p>
-        I had not built transformers before, and I mainly wanted to get off the ground and start training something.
-        So I started from nanochat and kept its GPT backbone mostly the same. I did not spend much time tuning the
-        architecture. In practice, I just kept the same rough model size nanochat started from: 12 layers, 6
-        attention heads, and an embedding dimension of 768.
+        I started from nanochat and kept its GPT backbone mostly unchanged. I did try a few depths early, but I was not
+        trying to invent a new architecture. The main version settled at 12 layers, 6 attention heads, and a 768-wide
+        embedding.
       </p>
       <p>
-        Context length was the one place where chess changed the setup. In a language model, the next token
-        is predicted from all the tokens before it, so a large context window only helps if much earlier parts of the
-        sequence are still useful. nanochat also uses a small context window, but there that tradeoff can show up in
-        the quality of the outputs. In chess, once one token stands for one move, the useful context is basically just
-        the game so far. A game is short, so there was not much reason to pay for a huge window. I checked the
-        dataset to make sure 512 tokens were already enough to cover basically any full game I had, and they were.
-        That kept the setup small, and it kept training and inference cheap too. Once that was set, the more
-        interesting question was how to train it.
+        Context length had a real training cost here. Attention has to run across the tokens in the window, so making the
+        window larger changes the cost of every batch. It also makes each generated move carry a longer history.
       </p>
+      <p>
+        Move-level tokenization made 512 tokens go much further than it would in normal text. One token was one move by
+        one player. Most games were only tens of tokens long, and even long games were in the few-hundred-token range.
+      </p>
+      <p>
+        So I used a 512-token window. It kept almost every game in view, without making the run pay for a text-sized
+        window that chess was not really using.
+      </p>
+      <figure>
+        <div class="viz model-flow-viz">
+          <div class="context-window-viz" aria-label="Context window as visible history before the next-token prediction">
+            <div>
+              <div class="cost-kicker">Context window</div>
+              <div class="cost-title">what the model gets to look at</div>
+            </div>
+            <div class="context-example">
+              <div class="context-label">
+                <strong>Text</strong>
+                <span>huge window</span>
+              </div>
+              <div class="history-strip" aria-label="Long text context before the next token">
+                <span class="history-chip faded">prompt</span>
+                <span class="history-chip faded">docs</span>
+                <span class="history-chip faded">chat</span>
+                <span class="history-chip faded">code</span>
+                <span class="history-chip faded">&hellip;</span>
+                <span class="history-chip">last sentence</span>
+              </div>
+              <div class="next-chip">next token</div>
+            </div>
+            <div class="context-example">
+              <div class="context-label">
+                <strong>Chess</strong>
+                <span>512 tokens</span>
+              </div>
+              <div class="history-strip" aria-label="Chess move history before the next move">
+                <span class="history-chip">&lt;bos&gt;</span>
+                <span class="history-chip">e4</span>
+                <span class="history-chip">e5</span>
+                <span class="history-chip">Nf3</span>
+                <span class="history-chip">Nc6</span>
+                <span class="history-chip">Bb5</span>
+                <span class="history-chip">&hellip;</span>
+              </div>
+              <div class="next-chip">next move</div>
+            </div>
+          </div>
+        </div>
+      </figure>
     </section>
 
     <section class="section article-section" id="training">
       <h2>Training</h2>
       <p>
-        I wanted to do this in a slightly zero-to-hero way at first. So the first training loops were just in a
-        notebook on my own computer, on only a few thousand games, where I could watch what each step was doing. I was
-        not trying to build a strong chess model yet. I just wanted to know if next-move prediction alone would do
-        anything at all.
+        I started in a notebook on my own computer, using only a few thousand games so I could see every step. The
+        first goal was basic: would plain next-move prediction produce anything chess-like?
       </p>
       <p>
-        Once that seemed worth pushing a little further, I moved the same basic setup onto Modal so I could use a GPU
-        and just get more training steps in. The first sign was the loss. I was kind of thrilled when it started
-        dropping. Then the games started making more sense too. The model could get through openings, reach
-        recognizable middlegames, and sometimes even win.
+        Once it did, I moved the run to Modal for GPU training. The loss dropped, the sampled games held openings
+        together, and the model started reaching recognizable middlegames instead of collapsing immediately.
       </p>
       <figure>
         <div class="viz prose-viz training-loss-viz">
@@ -490,20 +1093,15 @@
         <figcaption class="figure-note training-loss-note">I was embarrassingly excited by this plot.</figcaption>
       </figure>
       <p>
-        I kept sanity-checking it in direct ways too: letting it play full games, seeing whether the openings held
-        together, and later trying it against weak Stockfish. Once that first run worked, I mostly just wanted to make
-        it bigger and see what happened. So I kept the setup the same and increased the obvious things. The first serious
-        version of that was roughly 500k games from players rated above 2000 Elo. The models got bigger too. By then
-        I could also make the checkpoints play each other, and the difference showed up pretty quickly. In a 100-game
-        match, the 8-layer model beat the smaller 4-layer one 53-1. The 12-layer one beat it 69-3. What I noticed
-        more than the score was the way those games ended: the bigger models were much better at actually finishing
-        games, while the smaller one kept drifting into long draws.
+        The next push was scale: roughly 500k games from 2000+ Elo players, plus larger models. Checkpoints could play
+        each other by then, and the difference showed up quickly. In a 100-game match against the 4-layer model, the
+        8-layer model went 53 wins, 46 draws, and 1 loss. The 12-layer model went 69 wins, 28 draws, and 3 losses. The
+        larger models also finished games more often, while the smaller one kept drifting into long draws.
       </p>
       <p>
-        At some point I got curious about where the model was actually messing up. So I looked at the validation loss,
-        but broken out by move number instead of averaging everything together. For each real game, I stepped through
-        it move by move, checked the loss on the actual next move, and then grouped those losses by where they happened
-        in the game. The opening was mostly okay. The middlegame was where the loss started getting worse.
+        To see where it failed, I broke validation loss out by move number. For each held-out game, I stepped through
+        the actual moves, measured loss on the next move, and grouped the losses by ply. Openings were mostly fine.
+        Middlegames were worse.
       </p>
       <figure>
         <div class="viz prose-viz training-loss-viz">
@@ -511,57 +1109,34 @@
         </div>
       </figure>
       <p>
-        That was not very surprising. Openings are repetitive. The model sees the same structures and move sequences
-        over and over again there. By the middlegame, the game has branched out, the positions are sharper, and there
-        are just many more ways to be wrong.
+        Openings are repetitive. The model sees the same structures and move sequences over and over again there. By the
+        middlegame, the game has branched out, the positions are sharper, and there are many more ways to be wrong.
       </p>
       <p>
-        Around the same time, I had also started playing with Lichess puzzles as a separate dataset. That made the
-        next hypothesis tempting: if the model was struggling in the middlegame, maybe it needed sharper tactical
-        games. At first I expected puzzles to be the important ingredient.
+        The next experiments changed the data: puzzle-linked full games, which might expose sharper middlegames, and
+        larger ordinary-game runs, which would simply put more good move sequences in front of the model.
       </p>
       <p>
-        To check that, I trained the same kind of model twice, changing only the games it saw. One model got roughly
-        500k actual games from players rated above 2000. Another got 500k full games that happened to contain Lichess
-        puzzles. If puzzle-linked games were automatically better, this should have shown up.
+        The comparison set became a small ladder: 500k actual games, 500k puzzle-linked games, 5M actual games, 5M
+        puzzle-linked games, and later 15M actual games. I kept the architecture and next-move objective mostly fixed so
+        the benchmarks could separate data source from data scale.
       </p>
       <p>
-        It did not. The normal 500k-game model actually beat the puzzle-linked one. That was useful. It ruled out the
-        cleanest version of the puzzle story.
-      </p>
-      <p>
-        What did work was adding more games. When I took the same plain next-move setup from 500k actual games to
-        about 3M actual games, it became much stronger. When I gave the puzzle-linked version roughly five million
-        games, that improved too. That was a little annoying, because it made the result less clean, but also more
-        interesting.
-      </p>
-      <p>
-        The best model is still the large puzzle-linked one. But I no longer think the right sentence is "puzzles made
-        it good." A more honest sentence is: the plain model keeps getting better when I give it many more good games.
-        Whether puzzle-linked games are better than normal games at the same size is still open.
-      </p>
-      <p>
-        This matters because the project is trying to make the language model internalize chess, not hide mistakes in
-        the wrapper. Runtime legality checks can keep games running, but they are not the prize. The model that moved
-        the project forward was not the one with the cleverest inference trick or training trick. It was
-        the plain model trained on enough good move sequences that it needed those tricks less often.
-      </p>
-      <p>
-        I am still playing with two other training ideas. One is giving extra weight to the actual puzzle solution
-        moves inside full games. The other is asking the model to learn a rough position evaluation alongside the next
-        move. I want to try both a bit more before writing much about them.
+        I am also testing more targeted ideas: extra hard examples around checks, pins, and king safety, and a rough
+        position-evaluation auxiliary task. Those are still side experiments. The main runs kept the next-move objective
+        fixed so the measurements would say something about the language-model objective itself.
       </p>
     </section>
 
     <section class="section article-section" id="inference">
       <h2>Inference</h2>
       <p>
-        After training, the basic loop is almost embarrassingly small. Start with <code>&lt;bos&gt;</code>, feed the
-        tokens so far through the model, look at the logits at the last position, and choose one next token. If that
-        token is <code>e4</code>, I push <code>e4</code> onto a chess board and repeat.
+        After training, the inference loop is small. Start with <code>&lt;bos&gt;</code>, feed the tokens so far through
+        the model, look at the logits at the last position, and choose one next token. If that token is <code>e4</code>,
+        I push <code>e4</code> onto a chess board and repeat.
       </p>
       <p>
-        This is the part I liked in practice: one token, one move.
+        I liked how direct that felt: one token came out, and that token was the move.
       </p>
       <figure>
         <div class="viz">
@@ -599,100 +1174,544 @@
         </div>
       </figure>
       <p>
-        For actually playing games, I usually add a legal-move filter before sampling. That keeps the game alive, but it
-        is also a hack in exactly the place where I would rather not have one. It lets the wrapper remove moves the
-        model should have known not to say. So it answers a narrower question: what does the model choose among legal
-        moves? It does not answer the more interesting question of whether the model knew the move was legal in the
-        first place.
+        For actual games, I usually filter to legal moves before sampling. That keeps the game alive, but it lets the
+        wrapper remove moves the model should have rejected on its own. With legal filtering, the game no longer tests
+        whether the model rejects illegal moves. It tests which legal move it prefers.
       </p>
       <p>
-        The other small piece is stopping. The dataset has <code>&lt;eos&gt;</code>, so the model can learn to end games
-        too. In practice I still keep boring guardrails like a maximum move count, because otherwise one bad sample can
-        turn an experiment into an infinite game. That is useful engineering, but it also goes slightly against the
-        spirit of the project. I want the model to learn when a game is over, not rely on the harness to rescue it.
+        Game endings have the same problem. The dataset has <code>&lt;eos&gt;</code>, so the model can learn to end games. In
+        practice I still keep guardrails like a maximum move count, because otherwise one bad sample can turn an
+        experiment into an infinite game. That keeps the run bounded, but the model should learn when a game is over
+        instead of relying on the harness to rescue it.
       </p>
       <p>
-        I put this behind a Lichess bot mostly because it forced the loop to be real. Instead of sampling games in a
-        notebook, the model has to answer one position at a time against whoever challenges it. The model-facing part is
-        still the same: the moves so far go in, one next move comes out. You can challenge
-        <a href="https://lichess.org/@/nanoDanya">nanoDanya on Lichess</a>; under the hood it is still the same loop,
-        waiting for a position and answering with one move.
+        I put this behind a Lichess bot to test the live loop. Instead of sampling complete games in a notebook, the
+        model has to answer one live position at a time. You can challenge
+        <a href="https://lichess.org/@/nanoDanya">nanoDanya on Lichess</a>; under the hood it is still waiting for a
+        position and answering with one move.
       </p>
     </section>
 
     <section class="section article-section" id="benchmarking">
       <h2>Benchmarking</h2>
-      <h3>Making games cheap enough to run</h3>
       <p>
-        The least scientific benchmark was that I played against the model myself. That was useful for a while. It made
-        the failures easy to feel. If the model hung a queen, repeated nonsense, or drifted into a dead ending, I
-        noticed immediately. At one point the Lichess bot even beat me as Black, which was not real evidence of
-        strength, but was at least a good deployment sanity check: the same next-token loop made it through a real game
-        and I resigned.
+        At first I was the benchmark. I played against the model myself, watched the games, and noticed the obvious
+        failures: hanging a queen, repeating nonsense, or drifting into a dead ending. At one point the Lichess bot
+        even beat me as Black. That was fun, but it did not tell me whether one checkpoint was better than another.
       </p>
       <p>
-        That was a fun way to poke at it, but it was a terrible way to measure anything. I could play one game, maybe
-        a few, and notice obvious problems. It was not enough to say one checkpoint was actually better than another.
+        The game runner also hid one failure mode. Head-to-head matches usually use the legal-move filter from the
+        inference loop. That keeps games playable, but it can hide the illegal moves the model wanted to play first.
       </p>
       <p>
-        Once I stopped being the benchmark, the next problem was speed. To compare two checkpoints, I need a small
-        program to keep the boards, ask each model for moves, apply the moves, and record the results. My first version
-        did that one game at a time. That meant one tiny model call for one position, then a board update, then another
-        tiny model call. A 200-game comparison took around six minutes locally.
-      </p>
-      <p>
-        The fix was to make each model call do more work. Instead of asking for the next move in one game, I kept many
-        unfinished games open and asked for the next move in all of them together. That is batch inference: the model sees
-        many positions in one forward pass, and the GPU is less idle. Modal helped because I could run the same
-        checkpoint-vs-checkpoint comparison on a few remote GPU workers. For a 200-game run, each worker plays a different
-        range of games from the same matchup, and the script merges those game records into one result. Two things changed
-        at once here: I batched the model calls, and I stopped running everything on my laptop. The practical result was
-        still the thing I cared about: the same 200-game comparison now finishes in under a minute.
-      </p>
-
-      <h3>What I compared</h3>
-      <p>
-        The benchmark story is mostly about two plain next-move families. The first is actual-game data: the original
-        500k-game baseline, and a later 3M-game version trained the same way on more games. The second is puzzle-linked
-        data: a 500k-game control, and a much larger full run with 5M games.
-      </p>
-      <p>
-        The important part is that all four are still the simple version of the project: predict the next move token from
-        the moves so far. No tactical upweighting, no eval head, no new architecture. That keeps the comparison focused:
-        what changed was mostly the source of the games and the amount of data.
+        I used two checks together. Raw legality asks whether the model's top unfiltered move is legal.
+        Head-to-head games ask, after both models are kept inside legal chess, which one plays better.
       </p>
 
       <h3>Raw legality</h3>
       <p>
-        The first benchmark I care about is also the simplest one: before any legal-move filter, is the model's
-        favorite move actually legal? That felt closer to the point of the project. I do not just want a wrapper that
-        can steer a model through chess. I want the model to learn enough chess that its first instinct is usually a
-        real move.
+        This asks a simple question: before the game runner helps, is the model's first choice a legal move?
+      </p>
+      <table class="api-model-table raw-legality-table" aria-label="Raw legality benchmark">
+        <thead>
+          <tr>
+            <th class="model-col">Model</th>
+            <th class="legal-col">Legal move</th>
+            <th class="phase-col">By phase</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="model-col">
+              <span class="model-name">500k actual</span>
+              <span class="model-family">actual games</span>
+            </td>
+            <td class="legal-col legal-cell">
+              <span class="legal-value">95.92%</span>
+              <span class="legal-track"><span class="legal-fill mid" style="width: 95.92%;"></span></span>
+            </td>
+            <td class="phase-col">
+              <span class="phase-grid">
+                <span><span class="phase-label">Open</span><span class="phase-value">99.63%</span></span>
+                <span><span class="phase-label">Mid</span><span class="phase-value">94.69%</span></span>
+                <span><span class="phase-label">End</span><span class="phase-value">94.21%</span></span>
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td class="model-col">
+              <span class="model-name">500k puzzle-linked</span>
+              <span class="model-family">puzzle-linked games</span>
+            </td>
+            <td class="legal-col legal-cell">
+              <span class="legal-value">96.02%</span>
+              <span class="legal-track"><span class="legal-fill mid" style="width: 96.02%;"></span></span>
+            </td>
+            <td class="phase-col">
+              <span class="phase-grid">
+                <span><span class="phase-label">Open</span><span class="phase-value">99.72%</span></span>
+                <span><span class="phase-label">Mid</span><span class="phase-value">94.44%</span></span>
+                <span><span class="phase-label">End</span><span class="phase-value">95.74%</span></span>
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td class="model-col">
+              <span class="model-name">5M actual</span>
+              <span class="model-family">actual games</span>
+            </td>
+            <td class="legal-col legal-cell">
+              <span class="legal-value">99.46%</span>
+              <span class="legal-track"><span class="legal-fill" style="width: 99.46%;"></span></span>
+            </td>
+            <td class="phase-col">
+              <span class="phase-grid">
+                <span><span class="phase-label">Open</span><span class="phase-value">99.91%</span></span>
+                <span><span class="phase-label">Mid</span><span class="phase-value">99.38%</span></span>
+                <span><span class="phase-label">End</span><span class="phase-value">98.98%</span></span>
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td class="model-col">
+              <span class="model-name">5M puzzle-linked</span>
+              <span class="model-family">puzzle-linked games</span>
+            </td>
+            <td class="legal-col legal-cell">
+              <span class="legal-value">99.61%</span>
+              <span class="legal-track"><span class="legal-fill" style="width: 99.61%;"></span></span>
+            </td>
+            <td class="phase-col">
+              <span class="phase-grid">
+                <span><span class="phase-label">Open</span><span class="phase-value">99.91%</span></span>
+                <span><span class="phase-label">Mid</span><span class="phase-value">99.59%</span></span>
+                <span><span class="phase-label">End</span><span class="phase-value">99.15%</span></span>
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td class="model-col">
+              <span class="model-name">15M actual</span>
+              <span class="model-family">actual games</span>
+            </td>
+            <td class="legal-col legal-cell">
+              <span class="legal-value">99.71%</span>
+              <span class="legal-track"><span class="legal-fill" style="width: 99.71%;"></span></span>
+            </td>
+            <td class="phase-col">
+              <span class="phase-grid">
+                <span><span class="phase-label">Open</span><span class="phase-value">99.91%</span></span>
+                <span><span class="phase-label">Mid</span><span class="phase-value">99.63%</span></span>
+                <span><span class="phase-label">End</span><span class="phase-value">99.66%</span></span>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        I ran this on the same 4096 saved positions for each model. This was the first result that made me stop and
+        stare for a bit. Nothing in this check fixes the move after the fact. The model sees the game so far and
+        answers with one move. The largest run missed 12 positions out of 4096.
       </p>
       <p>
-        Inside the actual-game family, scale helped. The 3M-game model got much cleaner than the original 500k-game
-        baseline. Its first-choice move was illegal in 2.27% of positions, compared with 5.54% for the 500k baseline.
+        For a roughly 100M-parameter next-token model, that felt wild. It had learned how legal chess continues from move strings
+        alone.
       </p>
       <p>
-        The large puzzle-linked model was still cleaner. Its first-choice move was illegal in only 1.05% of positions.
-        That is the best raw legality result I have in this group. But it also saw more games than the 3M actual-game
-        model, so it is not a clean source-only comparison.
+        I also wanted a reference point from normal language models. I ran the same check against API models: same
+        positions, same game history, no legal move list. The comparison is not perfect, but it is useful. It shows how
+        much of this task is about being a good general model, and how much comes from seeing a lot of chess in exactly
+        this format.
+      </p>
+      <table class="api-model-table" aria-label="API model raw legal move benchmark">
+        <thead>
+          <tr>
+            <th class="model-col">Model</th>
+            <th class="legal-col">Legal move</th>
+            <th class="phase-col">By phase</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="model-col">
+              <span class="model-name">Gemini 3.1 Flash Lite</span>
+              <span class="model-family">Google</span>
+            </td>
+            <td class="legal-col legal-cell">
+              <span class="legal-value">98.95%</span>
+              <span class="legal-track"><span class="legal-fill" style="width: 98.95%;"></span></span>
+            </td>
+            <td class="phase-col">
+              <span class="phase-grid">
+                <span><span class="phase-label">Open</span><span class="phase-value">100.0%</span></span>
+                <span><span class="phase-label">Mid</span><span class="phase-value">98.64%</span></span>
+                <span><span class="phase-label">End</span><span class="phase-value">98.30%</span></span>
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td class="model-col">
+              <span class="model-name">Gemini 3.5 Flash</span>
+              <span class="model-family">Google</span>
+            </td>
+            <td class="legal-col legal-cell">
+              <span class="legal-value">98.17%</span>
+              <span class="legal-track"><span class="legal-fill" style="width: 98.17%;"></span></span>
+            </td>
+            <td class="phase-col">
+              <span class="phase-grid">
+                <span><span class="phase-label">Open</span><span class="phase-value">99.07%</span></span>
+                <span><span class="phase-label">Mid</span><span class="phase-value">97.86%</span></span>
+                <span><span class="phase-label">End</span><span class="phase-value">97.79%</span></span>
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td class="model-col">
+              <span class="model-name">Claude Opus 4.7</span>
+              <span class="model-family">Anthropic</span>
+            </td>
+            <td class="legal-col legal-cell">
+              <span class="legal-value">93.19%</span>
+              <span class="legal-track"><span class="legal-fill mid" style="width: 93.19%;"></span></span>
+            </td>
+            <td class="phase-col">
+              <span class="phase-grid">
+                <span><span class="phase-label">Open</span><span class="phase-value">99.17%</span></span>
+                <span><span class="phase-label">Mid</span><span class="phase-value">91.48%</span></span>
+                <span><span class="phase-label">End</span><span class="phase-value">89.27%</span></span>
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td class="model-col">
+              <span class="model-name">GPT-5.4</span>
+              <span class="model-family">OpenAI</span>
+            </td>
+            <td class="legal-col legal-cell">
+              <span class="legal-value">91.04%</span>
+              <span class="legal-track"><span class="legal-fill mid" style="width: 91.04%;"></span></span>
+            </td>
+            <td class="phase-col">
+              <span class="phase-grid">
+                <span><span class="phase-label">Open</span><span class="phase-value">98.52%</span></span>
+                <span><span class="phase-label">Mid</span><span class="phase-value">89.75%</span></span>
+                <span><span class="phase-label">End</span><span class="phase-value">82.62%</span></span>
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td class="model-col">
+              <span class="model-name">Grok 4.3</span>
+              <span class="model-family">xAI</span>
+            </td>
+            <td class="legal-col legal-cell">
+              <span class="legal-value">90.53%</span>
+              <span class="legal-track"><span class="legal-fill mid" style="width: 90.53%;"></span></span>
+            </td>
+            <td class="phase-col">
+              <span class="phase-grid">
+                <span><span class="phase-label">Open</span><span class="phase-value">97.31%</span></span>
+                <span><span class="phase-label">Mid</span><span class="phase-value">88.84%</span></span>
+                <span><span class="phase-label">End</span><span class="phase-value">85.01%</span></span>
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td class="model-col">
+              <span class="model-name">GPT-5.4 Mini</span>
+              <span class="model-family">OpenAI</span>
+            </td>
+            <td class="legal-col legal-cell">
+              <span class="legal-value">74.44%</span>
+              <span class="legal-track"><span class="legal-fill low" style="width: 74.44%;"></span></span>
+            </td>
+            <td class="phase-col">
+              <span class="phase-grid">
+                <span><span class="phase-label">Open</span><span class="phase-value">90.83%</span></span>
+                <span><span class="phase-label">Mid</span><span class="phase-value">69.70%</span></span>
+                <span><span class="phase-label">End</span><span class="phase-value">63.88%</span></span>
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td class="model-col">
+              <span class="model-name">Claude Sonnet 4.6</span>
+              <span class="model-family">Anthropic</span>
+            </td>
+            <td class="legal-col legal-cell">
+              <span class="legal-value">47.24%</span>
+              <span class="legal-track"><span class="legal-fill low" style="width: 47.24%;"></span></span>
+            </td>
+            <td class="phase-col">
+              <span class="phase-grid">
+                <span><span class="phase-label">Open</span><span class="phase-value">96.39%</span></span>
+                <span><span class="phase-label">Mid</span><span class="phase-value">32.77%</span></span>
+                <span><span class="phase-label">End</span><span class="phase-value">16.70%</span></span>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="figure-note">Even among API models, the ordering was not obvious: Gemini Flash came out cleaner than Opus.</p>
+
+      <h3>Model-vs-model games</h3>
+      <p>
+        Legal moves are not the same as good moves. I still wanted to know which model played better once the game
+        stayed inside normal chess, so I let the checkpoints play each other.
+      </p>
+      <div class="h2h-wrap" aria-label="Model-vs-model game results">
+        <table class="h2h-table">
+          <tr>
+            <th class="row-model">Row model vs opponent</th>
+            <th>500k actual</th>
+            <th>500k puzzle-linked</th>
+            <th>5M actual</th>
+            <th>5M puzzle-linked</th>
+            <th>15M actual</th>
+          </tr>
+          <tr>
+            <th class="row-model">500k actual</th>
+            <td class="diagonal">-</td>
+            <td class="played">
+              <span class="score">62.0%</span>
+              <span class="score-bar"><span class="score-fill win" style="width: 62%;"></span></span>
+            </td>
+            <td class="played">
+              <span class="score">9.0%</span>
+              <span class="score-bar"><span class="score-fill loss" style="width: 9%;"></span></span>
+            </td>
+            <td class="played">
+              <span class="score">13.0%</span>
+              <span class="score-bar"><span class="score-fill loss" style="width: 13%;"></span></span>
+            </td>
+            <td class="played">
+              <span class="score">7.0%</span>
+              <span class="score-bar"><span class="score-fill loss" style="width: 7%;"></span></span>
+            </td>
+          </tr>
+          <tr>
+            <th class="row-model">500k puzzle-linked</th>
+            <td class="played">
+              <span class="score">38.0%</span>
+              <span class="score-bar"><span class="score-fill loss" style="width: 38%;"></span></span>
+            </td>
+            <td class="diagonal">-</td>
+            <td class="played">
+              <span class="score">7.75%</span>
+              <span class="score-bar"><span class="score-fill loss" style="width: 7.75%;"></span></span>
+            </td>
+            <td class="played">
+              <span class="score">6.5%</span>
+              <span class="score-bar"><span class="score-fill loss" style="width: 6.5%;"></span></span>
+            </td>
+            <td class="played">
+              <span class="score">4.75%</span>
+              <span class="score-bar"><span class="score-fill loss" style="width: 4.75%;"></span></span>
+            </td>
+          </tr>
+          <tr>
+            <th class="row-model">5M actual</th>
+            <td class="played">
+              <span class="score">91.0%</span>
+              <span class="score-bar"><span class="score-fill win" style="width: 91%;"></span></span>
+            </td>
+            <td class="played">
+              <span class="score">92.25%</span>
+              <span class="score-bar"><span class="score-fill win" style="width: 92.25%;"></span></span>
+            </td>
+            <td class="diagonal">-</td>
+            <td class="played">
+              <span class="score">47.25%</span>
+              <span class="score-bar"><span class="score-fill loss" style="width: 47.25%;"></span></span>
+            </td>
+            <td class="played">
+              <span class="score">30.25%</span>
+              <span class="score-bar"><span class="score-fill loss" style="width: 30.25%;"></span></span>
+            </td>
+          </tr>
+          <tr>
+            <th class="row-model">5M puzzle-linked</th>
+            <td class="played">
+              <span class="score">87.0%</span>
+              <span class="score-bar"><span class="score-fill win" style="width: 87%;"></span></span>
+            </td>
+            <td class="played">
+              <span class="score">93.5%</span>
+              <span class="score-bar"><span class="score-fill win" style="width: 93.5%;"></span></span>
+            </td>
+            <td class="played">
+              <span class="score">52.75%</span>
+              <span class="score-bar"><span class="score-fill win" style="width: 52.75%;"></span></span>
+            </td>
+            <td class="diagonal">-</td>
+            <td class="played">
+              <span class="score">32.5%</span>
+              <span class="score-bar"><span class="score-fill loss" style="width: 32.5%;"></span></span>
+            </td>
+          </tr>
+          <tr>
+            <th class="row-model">15M actual</th>
+            <td class="played">
+              <span class="score">93.0%</span>
+              <span class="score-bar"><span class="score-fill win" style="width: 93%;"></span></span>
+            </td>
+            <td class="played">
+              <span class="score">95.25%</span>
+              <span class="score-bar"><span class="score-fill win" style="width: 95.25%;"></span></span>
+            </td>
+            <td class="played">
+              <span class="score">69.75%</span>
+              <span class="score-bar"><span class="score-fill win" style="width: 69.75%;"></span></span>
+            </td>
+            <td class="played">
+              <span class="score">67.5%</span>
+              <span class="score-bar"><span class="score-fill win" style="width: 67.5%;"></span></span>
+            </td>
+            <td class="diagonal">-</td>
+          </tr>
+        </table>
+      </div>
+      <p class="h2h-note">
+        Read across a row to see how that model scored against each opponent. Each matchup is 200 games; draws count
+        as half a point.
+      </p>
+      <p>
+        This was the clearest playing-strength result in the benchmark. The 15M model separated from every earlier
+        checkpoint, including the two 5M runs that had looked close before.
       </p>
 
-      <h3>Head-to-head games</h3>
-      <p>
-        The easiest benchmark to understand is still to let two checkpoints play each other. I used that a lot, because
-        it catches things that loss curves do not. A model can have a nice validation loss and still make strange
-        choices when the game gets long. Full games make that visible. But these games still use the legal-move filter
-        from the inference loop, so I read them next to the raw legality numbers, not instead of them.
+      <h3>Stockfish baselines</h3>
+      <div class="h2h-wrap stockfish-table" aria-label="Stockfish baseline score grid">
+        <table class="h2h-table stockfish-grid">
+          <tr>
+            <th class="row-model">Row model vs opponent</th>
+            <th>sf500</th>
+            <th>sf1000</th>
+            <th>sf1500</th>
+          </tr>
+          <tr>
+            <th class="row-model">500k actual</th>
+            <td class="played">
+              <span class="score">91.5%</span>
+              <span class="score-bar"><span class="score-fill win" style="width: 91.5%;"></span></span>
+            </td>
+            <td class="played">
+              <span class="score">7.75%</span>
+              <span class="score-bar"><span class="score-fill loss" style="width: 7.75%;"></span></span>
+            </td>
+            <td class="played">
+              <span class="score">1.75%</span>
+              <span class="score-bar"><span class="score-fill loss" style="width: 1.75%;"></span></span>
+            </td>
+          </tr>
+          <tr>
+            <th class="row-model">500k puzzle-linked</th>
+            <td class="played">
+              <span class="score">88.25%</span>
+              <span class="score-bar"><span class="score-fill win" style="width: 88.25%;"></span></span>
+            </td>
+            <td class="played">
+              <span class="score">7.5%</span>
+              <span class="score-bar"><span class="score-fill loss" style="width: 7.5%;"></span></span>
+            </td>
+            <td class="played">
+              <span class="score">1.5%</span>
+              <span class="score-bar"><span class="score-fill loss" style="width: 1.5%;"></span></span>
+            </td>
+          </tr>
+          <tr>
+            <th class="row-model">5M actual</th>
+            <td class="played">
+              <span class="score">97.5%</span>
+              <span class="score-bar"><span class="score-fill win" style="width: 97.5%;"></span></span>
+            </td>
+            <td class="played">
+              <span class="score">62.5%</span>
+              <span class="score-bar"><span class="score-fill win" style="width: 62.5%;"></span></span>
+            </td>
+            <td class="played">
+              <span class="score">29.25%</span>
+              <span class="score-bar"><span class="score-fill loss" style="width: 29.25%;"></span></span>
+            </td>
+          </tr>
+          <tr>
+            <th class="row-model">5M puzzle-linked</th>
+            <td class="played">
+              <span class="score">96.75%</span>
+              <span class="score-bar"><span class="score-fill win" style="width: 96.75%;"></span></span>
+            </td>
+            <td class="played">
+              <span class="score">53.5%</span>
+              <span class="score-bar"><span class="score-fill win" style="width: 53.5%;"></span></span>
+            </td>
+            <td class="played">
+              <span class="score">27.75%</span>
+              <span class="score-bar"><span class="score-fill loss" style="width: 27.75%;"></span></span>
+            </td>
+          </tr>
+          <tr>
+            <th class="row-model">15M actual</th>
+            <td class="played">
+              <span class="score">97.0%</span>
+              <span class="score-bar"><span class="score-fill win" style="width: 97%;"></span></span>
+            </td>
+            <td class="played">
+              <span class="score">78.25%</span>
+              <span class="score-bar"><span class="score-fill win" style="width: 78.25%;"></span></span>
+            </td>
+            <td class="played">
+              <span class="score">42.5%</span>
+              <span class="score-bar"><span class="score-fill loss" style="width: 42.5%;"></span></span>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <p class="h2h-note">
+        The larger models beat sf1000 but not sf1500; the 500k models only clear sf500.
       </p>
       <p>
-        In those games, the same pattern showed up. The 3M actual-game model was much stronger than the 500k actual-game
-        baseline, scoring 78.5% against it. The large puzzle-linked model still beat the 3M actual-game model, scoring
-        77.5% from the other side. That comparison is useful, but it is not size-matched: the puzzle-linked model saw
-        5M games, while the actual-game model saw 3M.
+        Head-to-head was good for comparing checkpoints, but I also wanted a chess-player read on the bot. Stockfish
+        ratings are not a clean Elo estimate here, but they give the result a scale that is easier to feel.
+      </p>
+      <p>
+        The 15M run was past the weak engine but still below sf1500. The games looked the same way: mostly normal chess,
+        with loose tactics and bad conversions showing up against stronger opponents.
       </p>
 
+    </section>
+
+    <section class="section article-section" id="what-i-know-so-far">
+      <h2>A small chess model</h2>
+      <p>
+        I expected the model to pick up openings. That part almost felt unfair. If it sees enough games starting with
+        e4, e5, and Nf3, of course those grooves start showing up.
+      </p>
+      <p>
+        The part I did not expect was how far the plain setup got after that. Whole-move tokens, next-move prediction,
+        more good games. No engine in the loop. No search. Just the same objective, with better data behind it.
+      </p>
+      <p>
+        Early on, I was mostly asking, "will it even make a legal move?" By the end, that was not the main drama. The
+        model would play something that looked like chess, and then lose for ordinary chess reasons: it missed what was
+        happening on the board, or could not turn a good position into a win.
+      </p>
+      <p>
+        That is a nice place for this to land. It is not a chess engine, and stronger opponents still show the gaps. But
+        it is a small language model trained on move strings that learned enough chess for the next problems to actually
+        be chess problems.
+      </p>
+      <p>
+        <a href="https://modal.com/">Modal</a> was genuinely excellent here. The part I appreciated most was that it
+        stayed out of the way. The training script was still just Python; the wrapper said, more or less: mount this
+        repo, use this volume, give me an A100. I ran it from my terminal and the logs came back there. That fit the
+        project perfectly: change one thing, run it again, check the result.
+      </p>
+      <p>
+        I learned a lot of chess from Daniel Naroditsky's videos, not just moves, but how to slow a position down until
+        it made sense. His teaching is part of why I cared enough about chess to build this, so nanoDanya felt like the
+        right name.
+      </p>
     </section>
     </article>
   </main>
