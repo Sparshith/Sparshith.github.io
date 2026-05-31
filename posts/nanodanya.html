@@ -946,7 +946,7 @@
       </figure>
       <p>
         The exact counts changed as the dataset changed, but the common moves still covered most tokens. The vocabulary
-        was not exploding. Whole-move tokenization was viable: the model could predict a move, not a fragment of
+        was not exploding. Whole-move tokenization was viable because the model could predict a move, not a fragment of
         move notation.
       </p>
     </section>
@@ -1079,8 +1079,8 @@
     <section class="section article-section" id="training">
       <h2>Training</h2>
       <p>
-        I started in a notebook on my own computer, using only a few thousand games so I could see every step. The
-        first goal was basic: would plain next-move prediction produce anything chess-like?
+        I started in a notebook on my own computer, using only a few thousand games so I could see every step. At first I
+        just wanted to know whether plain next-move prediction would produce anything chess-like.
       </p>
       <p>
         Once it did, I moved the run to Modal for GPU training. The loss dropped, the sampled games held openings
@@ -1093,10 +1093,10 @@
         <figcaption class="figure-note training-loss-note">I was embarrassingly excited by this plot.</figcaption>
       </figure>
       <p>
-        The next push was scale: roughly 500k games from 2000+ Elo players, plus larger models. Checkpoints could play
-        each other by then, and the difference showed up quickly. In a 100-game match against the 4-layer model, the
-        8-layer model went 53 wins, 46 draws, and 1 loss. The 12-layer model went 69 wins, 28 draws, and 3 losses. The
-        larger models also finished games more often, while the smaller one kept drifting into long draws.
+        Next I scaled to roughly 500k games from 2000+ Elo players and larger models. Checkpoints could play each other by
+        then, and the difference showed up quickly. In a 100-game match against the 4-layer model, the 8-layer model went
+        53 wins, 46 draws, and 1 loss. The 12-layer model went 69 wins, 28 draws, and 3 losses. The larger models also
+        finished games more often, while the smaller one kept drifting into long draws.
       </p>
       <p>
         To see where it failed, I broke validation loss out by move number. For each held-out game, I stepped through
@@ -1114,10 +1114,10 @@
       </p>
       <p>
         I tried changing the data next. One run used full games that contained puzzle positions, hoping those games would
-        include sharper middlegames. The other direction was simpler: use more ordinary high-Elo games. That gave me five
-        main comparisons: 500k actual games, 500k puzzle-linked games, 5M actual games, 5M puzzle-linked games, and later
-        15M actual games. The architecture and next-move objective stayed mostly fixed, so the benchmark was mostly about
-        data source and data scale.
+        include sharper middlegames. I also tried simply using more ordinary high-Elo games. The main comparisons were 500k
+        actual games, 500k puzzle-linked games, 5M actual games, 5M puzzle-linked games, and later 15M actual games. The
+        architecture and next-move objective stayed mostly fixed, so the benchmark was mostly about data source and data
+        scale.
       </p>
       <p>
         <a href="https://modal.com/">Modal</a> was genuinely excellent here. The part I appreciated most was that it
@@ -1135,7 +1135,7 @@
         I push <code>e4</code> onto a chess board and repeat.
       </p>
       <p>
-        I liked how direct that felt: one token came out, and that token was the move.
+        I liked how direct that felt. One token came out, and that token was the move.
       </p>
       <figure>
         <div class="viz">
@@ -1204,7 +1204,7 @@
 
       <h3>Raw legality</h3>
       <p>
-        This asks a simple question: before the game runner helps, is the model's first choice a legal move?
+        This asks whether the model's first choice is legal before the game runner helps.
       </p>
       <table class="api-model-table raw-legality-table" aria-label="Raw legality benchmark">
         <thead>
@@ -1669,8 +1669,8 @@
         ratings are not a clean Elo estimate here, but they give the result a scale that is easier to feel.
       </p>
       <p>
-        The 15M run was past the weak engine but still below sf1500. The games looked the same way: mostly normal chess,
-        with loose tactics and bad conversions showing up against stronger opponents.
+        The 15M run was past the weak engine but still below sf1500. The games looked similar. It mostly played normal
+        chess, with loose tactics and bad conversions showing up against stronger opponents.
       </p>
 
     </section>
