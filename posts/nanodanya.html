@@ -155,6 +155,33 @@
       font-weight: 700;
       line-height: 1;
     }
+    .prompt-box {
+      border: 1px solid #e3dcd2;
+      background: #fffdfa;
+      margin: 18px 0 6px;
+      max-width: 38em;
+    }
+    .prompt-row {
+      padding: 9px 12px;
+    }
+    .prompt-row + .prompt-row {
+      border-top: 1px solid #ece5da;
+    }
+    .prompt-row .source-kicker {
+      display: block;
+      margin-bottom: 4px;
+    }
+    .prompt-text {
+      display: block;
+      white-space: pre-wrap;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      padding: 0;
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--text);
+    }
     .context-window-viz {
       display: grid;
       gap: 12px;
@@ -495,6 +522,114 @@
       font-size: 14px;
       line-height: 1.5;
     }
+    .position-viz {
+      display: grid;
+      grid-template-columns: minmax(220px, 292px) minmax(0, 1fr);
+      gap: 18px;
+      align-items: center;
+      padding: 14px;
+      background: #fffdfa;
+    }
+    .position-board {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      grid-template-rows: repeat(8, 1fr);
+      width: 100%;
+      aspect-ratio: 1;
+      border: 1px solid var(--line);
+      overflow: hidden;
+      background:
+        conic-gradient(from 90deg, #f1dfc8 90deg, #c58e62 0 180deg, #f1dfc8 0 270deg, #c58e62 0)
+        0 0 / 25% 25%;
+    }
+    .position-board > * {
+      grid-column: var(--file);
+      grid-row: var(--row);
+    }
+    .position-marker {
+      position: relative;
+      z-index: 0;
+    }
+    .position-marker.legal {
+      box-shadow: inset 0 0 0 4px rgba(32, 104, 63, 0.42);
+    }
+    .position-marker.miss {
+      box-shadow: inset 0 0 0 4px rgba(178, 58, 42, 0.44);
+    }
+    .position-marker.guard {
+      box-shadow: inset 0 0 0 4px rgba(47, 95, 138, 0.42);
+    }
+    .position-marker[data-coord]::before {
+      content: attr(data-coord);
+      position: absolute;
+      left: 4px;
+      bottom: 4px;
+      color: rgba(47, 55, 66, 0.78);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0;
+      line-height: 1;
+    }
+    .position-piece {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1c2026;
+      font-size: clamp(21px, 5vw, 31px);
+      line-height: 1;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.18);
+    }
+    .position-piece.white {
+      color: #fffaf4;
+      text-shadow: 0 1px 1px rgba(25, 22, 20, 0.65), 0 0 1px rgba(25, 22, 20, 0.9);
+    }
+    .position-notes {
+      display: grid;
+      gap: 8px;
+      align-content: center;
+      min-width: 0;
+    }
+    .position-kicker {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+    .position-title {
+      color: var(--text);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.12;
+    }
+    .position-note {
+      display: grid;
+      grid-template-columns: 12px minmax(0, 1fr);
+      gap: 8px;
+      align-items: start;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+    .position-swatch {
+      width: 10px;
+      height: 10px;
+      margin-top: 5px;
+      border-radius: 999px;
+    }
+    .position-swatch.legal {
+      background: rgba(32, 104, 63, 0.64);
+    }
+    .position-swatch.miss {
+      background: rgba(178, 58, 42, 0.64);
+    }
+    .position-swatch.guard {
+      background: rgba(47, 95, 138, 0.64);
+    }
     @media (max-width: 640px) {
       .benchmark-table {
         display: block;
@@ -572,6 +707,12 @@
       }
       .h2h-table {
         min-width: 740px;
+      }
+      .position-viz {
+        grid-template-columns: 1fr;
+      }
+      .position-board {
+        max-width: 292px;
       }
       .source-flow-row {
         grid-template-columns: 1fr;
@@ -1117,9 +1258,7 @@
         finished games more often, while the smaller one kept drifting into long draws.
       </p>
       <p>
-        To see where it failed, I broke validation loss out by move number. For each held-out game, I stepped through
-        the actual moves, measured loss on the next move, and grouped the losses by ply. Openings were mostly fine.
-        Middlegames were worse.
+        I also broke validation loss out by move number. Openings were mostly fine. The trouble started later.
       </p>
       <figure>
         <div class="viz prose-viz training-loss-viz">
@@ -1127,12 +1266,57 @@
         </div>
       </figure>
       <p>
-        Openings are repetitive. The model sees the same structures and move sequences over and over again there. By the
-        middlegame, the game has branched out, the positions are sharper, and there are many more ways to be wrong.
+        Openings are repetitive, so the model keeps seeing the same structures. By the middlegame the game has branched
+        out, the positions are sharper, and there are more ways to go wrong. Here is one from a game it lost. The
+        position is equal, and the model puts its queen on a square a pawn covers.
+      </p>
+      <figure>
+        <div class="viz prose-viz position-viz" role="img" aria-label="A roughly equal position where the model, playing White, blundered its queen with Qd3, which the black pawn on c4 captures.">
+          <div class="position-board" aria-hidden="true">
+            <span class="position-marker legal" style="--file: 1; --row: 4;" data-coord="a5"></span>
+            <span class="position-marker guard" style="--file: 3; --row: 5;" data-coord="c4"></span>
+            <span class="position-marker miss" style="--file: 4; --row: 6;" data-coord="d3"></span>
+            <span class="position-piece" style="--file: 3; --row: 1;">&#9820;</span>
+            <span class="position-piece" style="--file: 5; --row: 1;">&#9818;</span>
+            <span class="position-piece" style="--file: 6; --row: 1;">&#9821;</span>
+            <span class="position-piece" style="--file: 8; --row: 1;">&#9820;</span>
+            <span class="position-piece" style="--file: 5; --row: 2;">&#9823;</span>
+            <span class="position-piece" style="--file: 6; --row: 2;">&#9823;</span>
+            <span class="position-piece white" style="--file: 2; --row: 3;">&#9815;</span>
+            <span class="position-piece" style="--file: 5; --row: 3;">&#9821;</span>
+            <span class="position-piece white" style="--file: 5; --row: 4;">&#9817;</span>
+            <span class="position-piece" style="--file: 7; --row: 4;">&#9823;</span>
+            <span class="position-piece" style="--file: 8; --row: 4;">&#9823;</span>
+            <span class="position-piece" style="--file: 1; --row: 5;">&#9819;</span>
+            <span class="position-piece" style="--file: 3; --row: 5;">&#9823;</span>
+            <span class="position-piece white" style="--file: 3; --row: 6;">&#9813;</span>
+            <span class="position-piece white" style="--file: 6; --row: 6;">&#9815;</span>
+            <span class="position-piece white" style="--file: 2; --row: 7;">&#9817;</span>
+            <span class="position-piece white" style="--file: 6; --row: 7;">&#9817;</span>
+            <span class="position-piece white" style="--file: 7; --row: 7;">&#9817;</span>
+            <span class="position-piece white" style="--file: 8; --row: 7;">&#9817;</span>
+            <span class="position-piece white" style="--file: 4; --row: 8;">&#9814;</span>
+            <span class="position-piece white" style="--file: 7; --row: 8;">&#9812;</span>
+          </div>
+          <div class="position-notes">
+            <div class="position-kicker">A real blunder</div>
+            <div class="position-title">White to move, equal.</div>
+            <div class="position-note"><span class="position-swatch legal"></span><span>Best move: <code>Qa5</code>.</span></div>
+            <div class="position-note"><span class="position-swatch miss"></span><span>Model played <code>Qd3</code>.</span></div>
+            <div class="position-note"><span class="position-swatch guard"></span><span>The <code>c4</code> pawn takes it: <code>cxd3</code>.</span></div>
+          </div>
+        </div>
+      </figure>
+      <p>
+        The move the engine wanted, <code>Qa5</code>, looks just as loose. It sits the queen right next to Black's on
+        <code>a4</code>. It isn't hanging though. Take it and <code>Bc6+</code> forces <code>Rxc6</code>, then
+        <code>Rd8</code> is mate, since the bishop on <code>b6</code> covers both <code>a5</code> and <code>d8</code>. I
+        had to play it out before I believed it.
       </p>
       <p>
-        I tried changing the data next. One run used full games that contained puzzle positions, hoping those games would
-        include sharper middlegames. I also tried simply using more ordinary high-Elo games. The main comparisons were 500k
+        Blunders like that were the pattern, and the most direct lever I had was the data. One run used full games that
+        contained puzzle positions, hoping those would be more tactical. I also tried simply using more ordinary
+        high-Elo games. The main comparisons were 500k
         actual games, 500k puzzle-linked games, 5M actual games, 5M puzzle-linked games, and later 15M actual games. The
         architecture and next-move objective stayed mostly fixed, so the benchmark was mostly about data source and data
         scale.
@@ -1330,10 +1514,31 @@
         alone.
       </p>
       <p>
-        I also wanted a reference point from normal language models. I ran the same check against API models: same
-        positions, same game history, no legal move list. The comparison is not perfect, but it is useful. It shows how
-        much of this task is about being a good general model, and how much comes from seeing a lot of chess in exactly
-        this format.
+        I also wanted a reference point from normal language models, so I ran the same check against API models. The
+        comparison is rough, but it shows how much of this task is being a good general model, and how much comes from
+        seeing a lot of chess in this exact format.
+      </p>
+      <p>
+        They saw what the model sees and nothing more, the moves so far, no board, no FEN, no list of legal moves to
+        pick from. I asked for one move at temperature 0, so the runs are deterministic, and I parsed replies leniently
+        so nothing lost a point for wrapping its move in extra text. Here is the exact prompt.
+      </p>
+      <div class="prompt-box" aria-label="Prompt sent to the API models">
+        <div class="prompt-row">
+          <span class="source-kicker">System</span>
+          <code class="prompt-text">You are a chess player. Return exactly one legal SAN chess move and nothing else.</code>
+        </div>
+        <div class="prompt-row">
+          <span class="source-kicker">User</span>
+          <code class="prompt-text">Game so far:
+1. e4 c5 2. Nf3 d6 3. d4 cxd4
+
+Side to move: White.
+Return exactly one legal SAN move.</code>
+        </div>
+      </div>
+      <p>
+        These models have seen plenty of chess, so legality should be the easy part.
       </p>
       <table class="api-model-table" aria-label="API model raw legal move benchmark">
         <thead>
